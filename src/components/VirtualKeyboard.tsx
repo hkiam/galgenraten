@@ -22,6 +22,11 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
     onLetterClick(letter);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // Prevent zoom on double tap
+    e.preventDefault();
+  };
+
   const isLetterUsed = (letter: string): boolean => {
     return usedLetters.includes(letter.toLowerCase());
   };
@@ -35,7 +40,9 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
               key={letter}
               className={`keyboard-button ${isLetterUsed(letter) ? 'used' : ''}`}
               onClick={() => handleLetterClick(letter)}
+              onTouchStart={handleTouchStart}
               disabled={disabled || isLetterUsed(letter)}
+              aria-label={`Buchstabe ${letter}`}
             >
               {letter}
             </button>

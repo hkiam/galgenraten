@@ -46,10 +46,37 @@ const PlayerSetup: React.FC = () => {
     <div className="player-setup">
       <h2>Spieler-Verwaltung</h2>
       
+      <div className="players-list">
+        <h3>Spieler ({players.length})</h3>
+        {players.length === 0 ? (
+          <p className="no-players">Noch keine Spieler hinzugefügt</p>
+        ) : (
+          <div className="players-grid">
+            {players.map((player) => (
+              <div key={player.id} className="player-card">
+                <span className="player-icon">{player.icon}</span>
+                <span className="player-name">{player.name}</span>
+                <span className="player-wins">🏆 {player.wins}</span>
+                <button
+                  className="remove-button"
+                  onClick={() => removePlayer(player.id)}
+                  title="Spieler entfernen"
+                  aria-label={`${player.name} entfernen`}
+                >
+                  ❌
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="add-player-section">
         <button 
           className={`toggle-add-player ${isAddPlayerExpanded ? 'expanded' : ''}`}
           onClick={toggleAddPlayer}
+          aria-expanded={isAddPlayerExpanded}
+          aria-controls="add-player-form"
         >
           <span className="toggle-icon">{isAddPlayerExpanded ? '➖' : '➕'}</span>
           <span className="toggle-text">
@@ -58,7 +85,7 @@ const PlayerSetup: React.FC = () => {
         </button>
 
         {isAddPlayerExpanded && (
-          <div className="add-player-form">
+          <div className="add-player-form" id="add-player-form">
             <div className="form-group">
               <label>Name:</label>
               <input
@@ -92,31 +119,7 @@ const PlayerSetup: React.FC = () => {
             </button>
           </div>
         )}
-      </div>
-
-      <div className="players-list">
-        <h3>Spieler ({players.length})</h3>
-        {players.length === 0 ? (
-          <p className="no-players">Noch keine Spieler hinzugefügt</p>
-        ) : (
-          <div className="players-grid">
-            {players.map((player) => (
-              <div key={player.id} className="player-card">
-                <span className="player-icon">{player.icon}</span>
-                <span className="player-name">{player.name}</span>
-                <span className="player-wins">🏆 {player.wins}</span>
-                <button
-                  className="remove-button"
-                  onClick={() => removePlayer(player.id)}
-                  title="Spieler entfernen"
-                >
-                  ❌
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      </div>      
 
       {players.length >= 2 && (
         <div className="start-game-section">

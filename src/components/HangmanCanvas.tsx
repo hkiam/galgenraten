@@ -114,7 +114,13 @@ const HangmanCanvas: React.FC<HangmanCanvasProps> = ({ wrongGuesses }) => {
       ref={canvasRef}
       width={300}
       height={300}
-      style={{ border: '1px solid #000', marginBottom: '20px' }}
+      style={{ 
+        border: '1px solid #000', 
+        marginBottom: '20px',
+        maxWidth: '100%',
+        height: 'auto'
+      }}
+      aria-label={`Galgen mit ${wrongGuesses} falschen Versuchen`}
     />
   );
 };
