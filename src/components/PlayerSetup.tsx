@@ -1,46 +1,13 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../stores/gameStore';
-import { getAvailableIcons } from '../utils/storage';
+import AddPlayerModal from './AddPlayerModal';
 
 const PlayerSetup: React.FC = () => {
-  const { players, addPlayer, removePlayer, startWordInput } = useGameStore();
-  const [playerName, setPlayerName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState('🤖');
-  const [isAddPlayerExpanded, setIsAddPlayerExpanded] = useState(false);
-  
-  const availableIcons = getAvailableIcons();
+  const { players, removePlayer, startWordInput } = useGameStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddPlayer = () => {
-    if (!playerName.trim()) {
-      alert('Bitte geben Sie einen Namen ein!');
-      return;
-    }
-    
-    if (players.some(p => p.name.toLowerCase() === playerName.trim().toLowerCase())) {
-      alert('Ein Spieler mit diesem Namen existiert bereits!');
-      return;
-    }
-
-    addPlayer(playerName.trim(), selectedIcon);
-    setPlayerName('');
-    setSelectedIcon('🤖');
-    setIsAddPlayerExpanded(false); // Collapse after adding
-  };
-
-  const toggleAddPlayer = () => {
-    setIsAddPlayerExpanded(!isAddPlayerExpanded);
-    if (!isAddPlayerExpanded) {
-      // Reset form when expanding
-      setPlayerName('');
-      setSelectedIcon('🤖');
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleAddPlayer();
-    }
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="player-setup">
@@ -73,52 +40,13 @@ const PlayerSetup: React.FC = () => {
 
       <div className="add-player-section">
         <button 
-          className={`toggle-add-player ${isAddPlayerExpanded ? 'expanded' : ''}`}
-          onClick={toggleAddPlayer}
-          aria-expanded={isAddPlayerExpanded}
-          aria-controls="add-player-form"
+          className="add-player-button"
+          onClick={openModal}
+          aria-label="Neuen Spieler hinzufügen"
         >
-          <span className="toggle-icon">{isAddPlayerExpanded ? '➖' : '➕'}</span>
-          <span className="toggle-text">
-            {isAddPlayerExpanded ? 'Abbrechen' : 'Neuen Spieler hinzufügen'}
-          </span>
+          <span className="add-icon">➕</span>
+          <span className="add-text">Spieler hinzufügen</span>
         </button>
-
-        {isAddPlayerExpanded && (
-          <div className="add-player-form" id="add-player-form">
-            <div className="form-group">
-              <label>Name:</label>
-              <input
-                type="text"
-                value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Spielername eingeben"
-                maxLength={20}
-                autoFocus
-              />
-            </div>
-            
-            <div className="form-group">
-              <label>Icon:</label>
-              <div className="icon-selector">
-                {availableIcons.map((icon) => (
-                  <button
-                    key={icon}
-                    className={`icon-button ${selectedIcon === icon ? 'selected' : ''}`}
-                    onClick={() => setSelectedIcon(icon)}
-                  >
-                    {icon}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <button className="add-button" onClick={handleAddPlayer}>
-              Spieler hinzufügen
-            </button>
-          </div>
-        )}
       </div>      
 
       {players.length >= 2 && (
@@ -132,6 +60,11 @@ const PlayerSetup: React.FC = () => {
       {players.length === 1 && (
         <p className="help-text">Mindestens 2 Spieler erforderlich</p>
       )}
+
+      <AddPlayerModal 
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
     </div>
   );
 };
