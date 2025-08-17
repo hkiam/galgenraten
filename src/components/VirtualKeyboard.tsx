@@ -1,0 +1,49 @@
+import React from 'react';
+
+interface VirtualKeyboardProps {
+  onLetterClick: (letter: string) => void;
+  usedLetters: string[];
+  disabled?: boolean;
+}
+
+const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ 
+  onLetterClick, 
+  usedLetters, 
+  disabled = false 
+}) => {
+  const keyboardLayout = [
+    ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä'],
+    ['Y', 'X', 'C', 'V', 'B', 'N', 'M'],
+  ];
+
+  const handleLetterClick = (letter: string) => {
+    if (disabled) return;
+    onLetterClick(letter);
+  };
+
+  const isLetterUsed = (letter: string): boolean => {
+    return usedLetters.includes(letter.toLowerCase());
+  };
+
+  return (
+    <div className="virtual-keyboard">
+      {keyboardLayout.map((row, rowIndex) => (
+        <div key={rowIndex} className="keyboard-row">
+          {row.map((letter) => (
+            <button
+              key={letter}
+              className={`keyboard-button ${isLetterUsed(letter) ? 'used' : ''}`}
+              onClick={() => handleLetterClick(letter)}
+              disabled={disabled || isLetterUsed(letter)}
+            >
+              {letter}
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default VirtualKeyboard;
