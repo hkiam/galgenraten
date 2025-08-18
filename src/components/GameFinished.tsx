@@ -21,7 +21,7 @@ const GameFinished: React.FC = () => {
             <div className="winner-card">
               <span className="text-3xl">{winner.icon}</span>
               <div>
-                <h3 className="text-xl font-semibold text-green-800 m-0">{winner.name} hat gewonnen!</h3>
+                <h3 className="m-0 text-xl font-semibold text-green-800">{winner.name} hat gewonnen!</h3>
                 <p className="muted">Gesamtsiege: {winner.wins}</p>
               </div>
             </div>

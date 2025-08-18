@@ -16,6 +16,9 @@ export default tseslint.config([
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
+    plugins: {
+      tailwindcss: tailwind,
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,

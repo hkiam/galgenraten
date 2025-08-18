@@ -69,7 +69,7 @@ const WordInput: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-slate-50 p-6 rounded-xl mb-6">
+      <div className="mb-6 rounded-xl bg-slate-50 p-6">
         <div className="player-indicator">
           <span className="text-2xl">{currentInputPlayer?.icon}</span>
           <span className="font-semibold text-slate-800">{currentInputPlayer?.name}</span>

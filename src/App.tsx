@@ -16,9 +16,9 @@ function App() {
   }, [initializeStore]);
 
   return (
-    <div className="min-h-dvh w-full flex flex-col items-center p-4">
+    <div className="flex min-h-dvh w-full flex-col items-center p-4">
       <UpdateNotification />
-      <main className="w-full container-app flex flex-col items-center gap-6">
+      <main className="container-app flex w-full flex-col items-center gap-6">
         {gamePhase === 'setup' && <PlayerSetup />}
         {gamePhase === 'word-input' && <WordInput />}
         {gamePhase === 'playing' && <MultiplayerGame />}

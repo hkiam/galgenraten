@@ -57,7 +57,7 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
     >
       <div>
         <div className="mb-4">
-          <label htmlFor="player-name" className="block mb-2 font-bold text-slate-800">Name:</label>
+          <label htmlFor="player-name" className="mb-2 block font-bold text-slate-800">Name:</label>
           <input
             id="player-name"
             type="text"
@@ -72,12 +72,12 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
         </div>
         
         <div className="mb-4">
-          <label className="block mb-2 font-bold text-slate-800">Icon wählen:</label>
+          <label className="mb-2 block font-bold text-slate-800">Icon wählen:</label>
           <div className="flex flex-wrap gap-2">
             {availableIcons.map((icon) => (
               <button
                 key={icon}
-                className={`px-3 py-2 text-xl border-2 rounded-lg bg-white transition ${selectedIcon === icon ? 'border-primary bg-blue-50 scale-105' : 'border-slate-200 hover:border-primary'}`}
+                className={`rounded-lg border-2 bg-white px-3 py-2 text-xl transition ${selectedIcon === icon ? 'scale-105 border-primary bg-blue-50' : 'border-slate-200 hover:border-primary'}`}
                 onClick={() => setSelectedIcon(icon)}
                 type="button"
                 aria-label={`Icon ${icon} auswählen`}
@@ -88,7 +88,7 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         
-        <div className="flex justify-end gap-3 mt-6">
+        <div className="mt-6 flex justify-end gap-3">
           <button className="btn btn-secondary" onClick={handleCancel}>Abbrechen</button>
           <button className="btn btn-primary" onClick={handleAddPlayer}>Spieler hinzufügen</button>
         </div>

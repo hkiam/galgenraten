@@ -77,7 +77,7 @@ const MultiplayerGame: React.FC = () => {
         )}
 
         {currentPlayer.isCompleted && (
-          <div className="player-completed text-center mt-4">
+          <div className="player-completed mt-4 text-center">
             {currentPlayer.hasWon ? (
               <div className="won">🎉 Wort erraten! 🎉</div>
             ) : (
