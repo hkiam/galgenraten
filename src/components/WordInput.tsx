@@ -11,6 +11,7 @@ const WordInput: React.FC = () => {
   } = useGameStore();
   
   const [word, setWord] = useState('');
+  const [error, setError] = useState<string | null>(null);
   
   const activePlayers = players.filter(p => p.active ?? true);
   const currentInputPlayer = activePlayers[wordInputIndex];
@@ -28,17 +29,17 @@ const WordInput: React.FC = () => {
   }, [allWordsEntered, startGame]);
 
   const handleSubmitWord = () => {
-    if (!word.trim()) {
-      alert('Bitte geben Sie ein Wort ein!');
+    const value = word.trim();
+    if (!value) {
+      setError('Bitte gib ein Wort ein.');
       return;
     }
-    
-    if (word.trim().length < 3) {
-      alert('Das Wort muss mindestens 3 Zeichen lang sein!');
+    if (value.length < 3) {
+      setError('Das Wort muss mindestens 3 Zeichen lang sein.');
       return;
     }
-
-    setPlayerWord(currentInputPlayer.id, word.trim());
+    setError(null);
+    setPlayerWord(currentInputPlayer.id, value);
     setWord('');
   };
 
@@ -89,6 +90,9 @@ const WordInput: React.FC = () => {
             className="input"
           />
           <button className="btn btn-primary" onClick={handleSubmitWord}>Wort bestätigen</button>
+          {error && (
+            <p className="text-danger" aria-live="polite">{error}</p>
+          )}
         </div>
       </div>
 

@@ -71,7 +71,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const state = get();
     const activePlayers = state.players.filter(p => p.active ?? true);
     if (activePlayers.length < 2) {
-      alert('Mindestens 2 Spieler erforderlich!');
+      // Guard: nicht starten, wenn zu wenige aktive Spieler
       return;
     }
     
@@ -95,7 +95,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const state = get();
     
     if (!word || word.trim().length < 3) {
-      alert('Das Wort muss mindestens 3 Zeichen lang sein.');
+      // Ungültige Eingabe wird auf UI-Ebene validiert
       return;
     }
 
