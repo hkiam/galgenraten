@@ -67,7 +67,8 @@ describe('MultiplayerGame overlay and flow', () => {
 
     render(<MultiplayerGame />);
     // One more wrong guess to exhaust to 11
-    fireEvent.click(screen.getByRole('button', { name: 'Buchstabe H' }));
+    const hButtons = screen.getAllByRole('button', { name: 'Buchstabe H' });
+    fireEvent.click(hButtons[0]);
 
     expect(screen.getByText(/hat alle Versuche aufgebraucht und verloren/i)).toBeInTheDocument();
   });
@@ -87,9 +88,9 @@ describe('MultiplayerGame overlay and flow', () => {
 
     render(<MultiplayerGame />);
     // Guess B correctly to win
-    fireEvent.click(screen.getByRole('button', { name: 'Buchstabe B' }));
+    const bButtons = screen.getAllByRole('button', { name: 'Buchstabe B' });
+    fireEvent.click(bButtons[0]);
     // Store switches to finished on win; component still shows completed state
     expect(screen.getByText(/Wort erraten/i)).toBeInTheDocument();
   });
 });
-

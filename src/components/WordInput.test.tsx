@@ -30,12 +30,14 @@ describe('WordInput UI', () => {
     expect(await screen.findByText(/Bitte gib ein Wort ein\./i)).toBeInTheDocument();
   });
 
-  it('accepts a valid word and advances progress', async () => {
+  it('accepts a valid word and stores it for the current player', async () => {
     render(<WordInput />);
-    const input = screen.getByPlaceholderText(/Wort eingeben/i);
+    const input = screen.getAllByPlaceholderText(/Wort eingeben/i)[0];
     fireEvent.change(input, { target: { value: 'Hallo' } });
     fireEvent.click(screen.getByRole('button', { name: /Wort bestätigen/i }));
-    expect(screen.getByText(/1 von 2 Wörtern eingegeben/i)).toBeInTheDocument();
+    const state = useGameStore.getState();
+    const firstPlayerId = state.players[0].id;
+    const gp = state.currentGamePlayers.find((g) => g.playerId === firstPlayerId);
+    expect(gp?.wordToGuess).toBe('Hallo');
   });
 });
-

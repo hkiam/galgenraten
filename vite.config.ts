@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import packageJson from './package.json';
@@ -14,6 +14,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: 'src/test/setup.ts',
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        // Stabilisiert Coverage-Läufe in eingeschränkten Umgebungen/CI
+        singleThread: true,
+      },
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

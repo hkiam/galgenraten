@@ -128,8 +128,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
         word: player.wordToGuess,
       }));
 
-    // Distribute words ensuring no player gets their own word
-    const distributedGamePlayers = distributeWordsRandomly(state.players, wordEntries);
+    // Distribute words ensuring no player gets their own word.
+    // Use only players participating in current game and preserve currentGamePlayers order.
+    const playersInGame: Player[] = state.currentGamePlayers
+      .map((gp) => state.players.find((p) => p.id === gp.playerId))
+      .filter((p): p is Player => !!p);
+    const distributedGamePlayers = distributeWordsRandomly(playersInGame, wordEntries);
     set({
       currentGamePlayers: distributedGamePlayers,
       gamePhase: 'playing',
