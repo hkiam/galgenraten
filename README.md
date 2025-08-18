@@ -1,16 +1,18 @@
-# 🎯 Galgenraten - Mehrspieler PWA
+# 🎯 Galgenraten – Mehrspieler PWA
 
-Ein modernes Galgenraten-Spiel für mehrere Spieler, entwickelt mit React, TypeScript und Vite. Spielbar als Progressive Web App (PWA) mit Offline-Unterstützung.
+Ein modernes Galgenraten-Spiel für mehrere Spieler, entwickelt mit React + TypeScript + Vite. Als PWA installierbar und offline spielbar.
 
 ## 🎮 Features
 
-- **Mehrspieler-Unterstützung**: Beliebig viele Spieler mit individuellen Namen und Emoji-Icons
-- **Zufällige Wortverteilung**: Jeder Spieler erhält ein fremdes Wort zum Raten
-- **Persistente Highscores**: Lokale Speicherung der Gewinn-Statistiken
-- **PWA-Funktionalität**: Installierbar und offline spielbar
-- **Automatische Updates**: Benachrichtigung über neue Versionen
-- **Responsive Design**: Optimiert für Desktop und Mobile
-- **Deutsche QWERTZ-Tastatur**: Unterstützung für Umlaute (Ä, Ö, Ü)
+- Mehrspieler mit Namen + Emoji-Icons
+- Sichere Wortverteilung (Derangement): Niemand bekommt sein eigenes Wort
+- Persistente Highscores (LocalStorage)
+- PWA mit Update-Prompt und Offline-Support
+- Responsive UI, deutsche QWERTZ-Tastatur (inkl. Ä/Ö/Ü)
+- Spieler aktivieren/deaktivieren statt löschen
+- Deutliche Rückmeldung bei Fehlversuch (Overlay, Übergabe-Hinweis, Hangman)
+- Haptik + kurzer Beep bei falschem Buchstaben (wenn verfügbar)
+- Spiel vorzeitig abbrechen (mit Bestätigung)
 
 ## 🚀 Live Demo
 
@@ -40,11 +42,15 @@ npm run dev
 ### Verfügbare Scripts
 
 ```bash
-npm run dev          # Entwicklungsserver starten
-npm run build        # Produktions-Build erstellen
-npm run preview      # Build lokal testen
-npm run lint         # Code-Qualität prüfen
-npm run deploy       # Manuelles Deployment zu GitHub Pages
+npm run dev            # Entwicklungsserver starten
+npm run build          # Produktions-Build erstellen
+npm run preview        # Build lokal testen
+npm run lint           # ESLint prüfen
+npm run format         # Prettier-Formatierung anwenden
+npm run test           # Vitest (watch)
+npm run test:run       # Vitest (einmalig)
+npm run test:coverage  # Vitest mit Coverage (text/html/lcov)
+npm run deploy         # Manuelles Deployment auf GitHub Pages
 ```
 
 ## 🎯 Spielregeln
@@ -58,19 +64,21 @@ npm run deploy       # Manuelles Deployment zu GitHub Pages
 
 ## 🏗️ Technologie-Stack
 
-- **Frontend**: React 18 mit TypeScript
-- **Build-Tool**: Vite
-- **State Management**: Zustand
-- **PWA**: Vite PWA Plugin mit Workbox
-- **Deployment**: GitHub Actions → GitHub Pages
-- **Styling**: Vanilla CSS mit CSS Grid und Flexbox
+- Frontend: React 18/19 mit TypeScript
+- Build: Vite
+- State: Zustand
+- Styling: Tailwind CSS (zentrale Utility-Klassen in `src/styles/tailwind.css`)
+- PWA: `vite-plugin-pwa` (Update-Prompt via `useRegisterSW`), base-aware SW
+- Tests: Vitest + Testing Library (jsdom), V8 Coverage
+- Qualität: ESLint (inkl. Tailwind-Plugin), Prettier, Husky + lint-staged
+- CI/CD: GitHub Actions (CI mit Lint/Tests/Coverage, Pages-Deploy)
 
-## 📱 PWA-Features
+## 📱 PWA & Deployment
 
-- **Offline-Funktionalität**: Vollständig spielbar ohne Internetverbindung
-- **App-Installation**: Installierbar auf Desktop und Mobile
-- **Update-Management**: Automatische Erkennung neuer Versionen
-- **Background-Sync**: Service Worker für zuverlässige Performance
+- Offline spielbar, installierbar als App
+- Update-Management mit Prompt (UpdateNotification)
+- Base-Pfad: `vite.config.ts` setzt `base` dynamisch; SW-URL ist base-aware
+- GitHub Pages: für Forks `package.json.homepage` und ggf. `BASE` anpassen
 
 ## 🔄 Versionierung und Updates
 
@@ -83,12 +91,10 @@ Das Projekt verwendet semantische Versionierung. Bei neuen Versionen erhalten Nu
 
 ### Automatisches Deployment
 
-Das Projekt verwendet GitHub Actions für automatisches Deployment:
+GitHub Actions Workflows:
 
-1. Push zu `main` Branch triggert Build
-2. Automatische Code-Qualitätsprüfung
-3. Build-Erstellung mit Produktionseinstellungen
-4. Deployment zu GitHub Pages
+- `ci.yml`: Lint, Tests, Coverage (HTML als Artefakt)
+- `deploy.yml`: Build und Deploy auf GitHub Pages (bei Push auf `main`)
 
 ### Manuelle Deployment
 
@@ -97,36 +103,39 @@ npm run build
 npm run deploy
 ```
 
-## 📂 Projektstruktur
+## 📂 Projektstruktur (Auszug)
 
 ```
 src/
-├── components/          # React-Komponenten
-│   ├── AppVersion.tsx   # Versionsanzeige
-│   ├── UpdateNotification.tsx  # PWA-Update-Management
-│   ├── PlayerSetup.tsx  # Spieler-Verwaltung
-│   ├── WordInput.tsx    # Wort-Eingabe-Phase
-│   ├── MultiplayerGame.tsx  # Hauptspiel-Interface
-│   ├── GameFinished.tsx # Ergebnis-Anzeige
-│   ├── HangmanCanvas.tsx    # Canvas-Galgen-Zeichnung
-│   └── VirtualKeyboard.tsx  # QWERTZ-Tastatur
-├── stores/              # Zustand State Management
-│   └── gameStore.ts     # Zentraler Spielzustand
-├── types/               # TypeScript-Definitionen
-│   └── game.ts          # Spiel-Interfaces
-├── utils/               # Hilfsfunktionen
-│   ├── storage.ts       # LocalStorage-Management
-│   └── wordDistribution.ts  # Wort-Verteilungslogik
-└── App.tsx              # Hauptkomponente
+├── components/
+│   ├── MultiplayerGame.tsx      # Spiel-UI, Overlay, Abbruch-Modal
+│   ├── PlayerSetup.tsx          # Verwaltung, Aktiv/Deaktiv, Hinzufügen/Löschen (mit Modal)
+│   ├── WordInput.tsx            # Wort-Eingabe (Val. + Fortschritt)
+│   ├── UpdateNotification.tsx   # PWA-Update-Prompt (useRegisterSW)
+│   ├── HangmanCanvas.tsx        # Canvas-Zeichnung (für Tests gemockt)
+│   └── ...
+├── stores/
+│   └── gameStore.ts             # Zustand, Derangement-Start, abortGame()
+├── styles/
+│   └── tailwind.css             # Tailwind + zentrale Utility-Klassen (btn/card/...)
+├── utils/
+│   ├── wordDistribution.ts      # Sichere Wortverteilung (kein eigenes Wort)
+│   ├── storage.ts               # LocalStorage
+│   └── feedback.ts              # Vibration + Audio-Beep
+└── test/
+    └── setup.ts                 # jest-dom, PWA-Mock, Canvas-Mock, Cleanup
+
+Tests (Auszug):
+├── components/*.test.tsx        # UI-Tests (Overlay, Eingabe)
+├── stores/gameStore.test.ts     # Flow- und Verlusttests
+└── utils/wordDistribution.test.ts
 ```
 
 ## 🤝 Beitragen
 
-1. Fork das Repository
-2. Erstelle einen Feature-Branch (`git checkout -b feature/amazing-feature`)
-3. Committe deine Änderungen (`git commit -m 'Add amazing feature'`)
-4. Push zum Branch (`git push origin feature/amazing-feature`)
-5. Öffne eine Pull Request
+- Pre-commit Hook formatiert & lintet automatisch (Husky + lint-staged)
+- Bitte `npm run lint` und `npm run test:run` lokal grün halten
+- PRs: Kurzbeschreibung, Screenshots (UI-Änderungen), ggf. Tests ergänzen
 
 ## 📄 Lizenz
 
