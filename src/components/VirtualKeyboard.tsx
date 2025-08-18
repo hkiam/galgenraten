@@ -34,7 +34,11 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
   return (
     <div className="virtual-keyboard">
       {keyboardLayout.map((row, rowIndex) => (
-        <div key={rowIndex} className="keyboard-row">
+        <div
+          key={rowIndex}
+          className="keyboard-row"
+          style={{ gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))` }}
+        >
           {row.map((letter) => (
             <button
               key={letter}
