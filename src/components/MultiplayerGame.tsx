@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../stores/gameStore';
 import HangmanCanvas from './HangmanCanvas';
+import { wrongFeedback } from '../utils/feedback';
 import VirtualKeyboard from './VirtualKeyboard';
 
 const MultiplayerGame: React.FC = () => {
@@ -28,6 +29,7 @@ const MultiplayerGame: React.FC = () => {
 
     // If wrong, show explicit overlay with next player's info
     if (!wasCorrect) {
+      wrongFeedback();
       // Read updated game state to compute next player (skip completed)
       const { currentPlayerIndex, currentGamePlayers } = useGameStore.getState();
       let nextIndex = (currentPlayerIndex + 1) % currentGamePlayers.length;
