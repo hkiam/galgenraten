@@ -4,14 +4,17 @@ import { VitePWA } from 'vite-plugin-pwa'
 import packageJson from './package.json'
 
 // https://vite.dev/config/
+const BASE = process.env.NODE_ENV === 'production' ? '/galgenraten/' : '/'
+
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/galgenraten/' : '/',
+  base: BASE,
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
   plugins: [
     react(),
     VitePWA({
+      minify: false,
       registerType: 'prompt',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
@@ -38,8 +41,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/galgenraten/',
-        scope: '/galgenraten/',
+        start_url: BASE,
+        scope: BASE,
         icons: [
           {
             src: 'pwa-192x192.png',

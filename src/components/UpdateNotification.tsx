@@ -1,57 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Workbox } from 'workbox-window';
+import React from 'react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const UpdateNotification: React.FC = () => {
-  const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [offlineReady, setOfflineReady] = useState(false);
-  const [wb, setWb] = useState<Workbox | null>(null);
+  const {
+    offlineReady: [offlineReady, setOfflineReady],
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegisterError(error: unknown) {
+      console.error('Service worker registration failed:', error);
+    },
+  });
 
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      const workbox = new Workbox('/sw.js');
-      
-      workbox.addEventListener('installed', (event) => {
-        if (!event.isUpdate) {
-          setOfflineReady(true);
-        }
-      });
-
-      workbox.addEventListener('waiting', () => {
-        setShowUpdatePrompt(true);
-      });
-
-      workbox.register().catch((error) => {
-        console.error('Service worker registration failed:', error);
-      });
-
-      setWb(workbox);
-    }
-  }, []);
-
-  const handleUpdate = async () => {
-    if (!wb) return;
-    
-    setIsUpdating(true);
-    try {
-      wb.addEventListener('controlling', () => {
-        window.location.reload();
-      });
-      
-      wb.messageSW({ type: 'SKIP_WAITING' });
-    } catch (error) {
-      console.error('Update failed:', error);
-      setIsUpdating(false);
-    }
-  };
-
-  const handleDismiss = () => {
-    setShowUpdatePrompt(false);
-  };
-
-  const handleOfflineReady = () => {
-    setOfflineReady(false);
-  };
+  const handleUpdate = () => updateServiceWorker(true);
+  const handleDismiss = () => setNeedRefresh(false);
+  const handleOfflineReady = () => setOfflineReady(false);
 
   if (offlineReady) {
     return (
@@ -70,7 +33,7 @@ const UpdateNotification: React.FC = () => {
     );
   }
 
-  if (showUpdatePrompt) {
+  if (needRefresh) {
     return (
       <div className="update-notification update-available">
         <div className="notification-content">
@@ -80,14 +43,12 @@ const UpdateNotification: React.FC = () => {
             <button 
               className="notification-button primary"
               onClick={handleUpdate}
-              disabled={isUpdating}
             >
-              {isUpdating ? 'Wird aktualisiert...' : 'Jetzt aktualisieren'}
+              Jetzt aktualisieren
             </button>
             <button 
               className="notification-button secondary"
               onClick={handleDismiss}
-              disabled={isUpdating}
             >
               Später
             </button>
