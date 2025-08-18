@@ -2,21 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useGameStore } from '../stores/gameStore';
 
 const WordInput: React.FC = () => {
-  const { 
-    players, 
-    currentGamePlayers, 
-    wordInputIndex, 
-    setPlayerWord, 
-    startGame 
-  } = useGameStore();
-  
+  const { players, currentGamePlayers, wordInputIndex, setPlayerWord, startGame } = useGameStore();
+
   const [word, setWord] = useState('');
   const [error, setError] = useState<string | null>(null);
-  
-  const activePlayers = players.filter(p => p.active ?? true);
+
+  const activePlayers = players.filter((p) => p.active ?? true);
   const currentInputPlayer = activePlayers[wordInputIndex];
-  
-  const wordsEntered = currentGamePlayers.filter(gp => gp.wordToGuess !== '').length;
+
+  const wordsEntered = currentGamePlayers.filter((gp) => gp.wordToGuess !== '').length;
   const allWordsEntered = wordsEntered === activePlayers.length;
 
   useEffect(() => {
@@ -61,13 +55,16 @@ const WordInput: React.FC = () => {
   return (
     <div className="panel">
       <h2 className="section-title">Wörter eingeben</h2>
-      
+
       <div className="progress">
         <div className="progress-text">
           {wordsEntered} von {activePlayers.length} Wörtern eingegeben
         </div>
         <div className="progress-track">
-          <div className="progress-value" style={{ width: `${(wordsEntered / players.length) * 100}%` }} />
+          <div
+            className="progress-value"
+            style={{ width: `${(wordsEntered / players.length) * 100}%` }}
+          />
         </div>
       </div>
 
@@ -89,9 +86,13 @@ const WordInput: React.FC = () => {
             autoFocus
             className="input"
           />
-          <button className="btn btn-primary" onClick={handleSubmitWord}>Wort bestätigen</button>
+          <button className="btn btn-primary" onClick={handleSubmitWord}>
+            Wort bestätigen
+          </button>
           {error && (
-            <p className="text-danger" aria-live="polite">{error}</p>
+            <p className="text-danger" aria-live="polite">
+              {error}
+            </p>
           )}
         </div>
       </div>
@@ -100,13 +101,13 @@ const WordInput: React.FC = () => {
         <h3>Status der Spieler:</h3>
         <div className="players-status-grid">
           {activePlayers.map((player, index) => {
-            const gamePlayer = currentGamePlayers.find(gp => gp.playerId === player.id);
+            const gamePlayer = currentGamePlayers.find((gp) => gp.playerId === player.id);
             const hasEnteredWord = gamePlayer?.wordToGuess !== '';
             const isCurrentPlayer = index === wordInputIndex;
-            
+
             return (
-              <div 
-                key={player.id} 
+              <div
+                key={player.id}
                 className={`player-status ${isCurrentPlayer ? 'current' : ''} ${hasEnteredWord ? 'completed' : ''}`}
               >
                 <span className="text-2xl">{player.icon}</span>

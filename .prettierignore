@@ -1,0 +1,7 @@
+dist
+node_modules
+.husky
+package-lock.json
+*.svg
+*.png
+*.ico

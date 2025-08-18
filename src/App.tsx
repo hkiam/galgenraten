@@ -7,7 +7,6 @@ import UpdateNotification from './components/UpdateNotification';
 import { useGameStore } from './stores/gameStore';
 // Tailwind styles are imported in main.tsx
 
-
 function App() {
   const { gamePhase, initializeStore } = useGameStore();
 

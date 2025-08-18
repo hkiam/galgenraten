@@ -6,10 +6,10 @@ interface VirtualKeyboardProps {
   disabled?: boolean;
 }
 
-const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ 
-  onLetterClick, 
-  usedLetters, 
-  disabled = false 
+const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
+  onLetterClick,
+  usedLetters,
+  disabled = false,
 }) => {
   const keyboardLayout = [
     ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],

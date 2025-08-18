@@ -135,6 +135,7 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe `LICENSE` Datei für Details.
 ## 🆘 Support
 
 Bei Fragen oder Problemen:
+
 - Öffne ein Issue auf GitHub
 - Beschreibe das Problem detailliert
 - Füge Screenshots hinzu, falls hilfreich

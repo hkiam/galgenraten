@@ -2,13 +2,7 @@ import React from 'react';
 import { useGameStore } from '../stores/gameStore';
 
 const GameFinished: React.FC = () => {
-  const { 
-    winner, 
-    players, 
-    currentGamePlayers, 
-    resetGame,
-    gameStatus 
-  } = useGameStore();
+  const { winner, players, currentGamePlayers, resetGame, gameStatus } = useGameStore();
 
   const sortedPlayers = [...players].sort((a, b) => b.wins - a.wins);
 
@@ -21,7 +15,9 @@ const GameFinished: React.FC = () => {
             <div className="winner-card">
               <span className="text-3xl">{winner.icon}</span>
               <div>
-                <h3 className="m-0 text-xl font-semibold text-green-800">{winner.name} hat gewonnen!</h3>
+                <h3 className="m-0 text-xl font-semibold text-green-800">
+                  {winner.name} hat gewonnen!
+                </h3>
                 <p className="muted">Gesamtsiege: {winner.wins}</p>
               </div>
             </div>
@@ -38,11 +34,11 @@ const GameFinished: React.FC = () => {
         <h3>Runden-Zusammenfassung</h3>
         <div className="round-results">
           {currentGamePlayers.map((gamePlayer) => {
-            const playerData = players.find(p => p.id === gamePlayer.playerId);
+            const playerData = players.find((p) => p.id === gamePlayer.playerId);
             if (!playerData) return null;
-            
+
             return (
-              <div 
+              <div
                 key={gamePlayer.playerId}
                 className={`round-result ${gamePlayer.hasWon ? 'won' : 'lost'}`}
               >
@@ -68,7 +64,7 @@ const GameFinished: React.FC = () => {
         <h3>🏆 Gesamtwertung</h3>
         <div className="highscore-list">
           {sortedPlayers.map((player, index) => (
-            <div 
+            <div
               key={player.id}
               className={`highscore-entry ${index === 0 ? 'first-place' : ''} ${player.id === winner?.id ? 'recent-winner' : ''}`}
             >

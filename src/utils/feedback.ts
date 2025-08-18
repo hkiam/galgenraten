@@ -1,7 +1,9 @@
 let audioCtx: AudioContext | null = null;
 
 declare global {
-  interface Window { webkitAudioContext?: typeof AudioContext }
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
 }
 
 function getAudioContext(): AudioContext | null {
@@ -30,7 +32,12 @@ export async function playBeep({
   duration = 0.15,
   type = 'square',
   volume = 0.05,
-}: { frequency?: number; duration?: number; type?: OscillatorType; volume?: number } = {}): Promise<void> {
+}: {
+  frequency?: number;
+  duration?: number;
+  type?: OscillatorType;
+  volume?: number;
+} = {}): Promise<void> {
   const ctx = getAudioContext();
   if (!ctx) return;
   try {

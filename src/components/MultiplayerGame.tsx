@@ -5,29 +5,21 @@ import { wrongFeedback } from '../utils/feedback';
 import VirtualKeyboard from './VirtualKeyboard';
 
 const MultiplayerGame: React.FC = () => {
-  const {         
-    getCurrentPlayer,
-    getCurrentPlayerData,
-    guessLetter,
-    nextPlayer,
-    gameStatus,
-    players,
-  } = useGameStore();
+  const { getCurrentPlayer, getCurrentPlayerData, guessLetter, nextPlayer, gameStatus, players } =
+    useGameStore();
 
   const currentPlayer = getCurrentPlayer();
   const currentPlayerData = getCurrentPlayerData();
-  const [wrongOverlay, setWrongOverlay] = useState<
-    | null
-    | {
-        letter: string;
-        nextName: string;
-        nextIcon: string;
-        lost: boolean;
-        loserName: string;
-        loserIcon: string;
-      }
-  >(null);
-  const keyboardDisabled = !!wrongOverlay || gameStatus !== 'playing' || (currentPlayer?.isCompleted ?? false);
+  const [wrongOverlay, setWrongOverlay] = useState<null | {
+    letter: string;
+    nextName: string;
+    nextIcon: string;
+    lost: boolean;
+    loserName: string;
+    loserIcon: string;
+  }>(null);
+  const keyboardDisabled =
+    !!wrongOverlay || gameStatus !== 'playing' || (currentPlayer?.isCompleted ?? false);
 
   if (!currentPlayer || !currentPlayerData) {
     return <div>Fehler: Kein aktiver Spieler gefunden</div>;
@@ -43,7 +35,7 @@ const MultiplayerGame: React.FC = () => {
       // Read updated game state to compute next player (skip completed)
       const { currentPlayerIndex, currentGamePlayers } = useGameStore.getState();
       const updatedCurrent = currentGamePlayers[currentPlayerIndex];
-      const currentData = players.find(p => p.id === updatedCurrent?.playerId);
+      const currentData = players.find((p) => p.id === updatedCurrent?.playerId);
       let nextIndex = (currentPlayerIndex + 1) % currentGamePlayers.length;
       let attempts = 0;
       while (currentGamePlayers[nextIndex]?.isCompleted && attempts < currentGamePlayers.length) {
@@ -51,7 +43,7 @@ const MultiplayerGame: React.FC = () => {
         attempts++;
       }
       const nextGamePlayer = currentGamePlayers[nextIndex];
-      const nextData = players.find(p => p.id === nextGamePlayer?.playerId);
+      const nextData = players.find((p) => p.id === nextGamePlayer?.playerId);
       setWrongOverlay({
         letter,
         nextName: nextData?.name ?? 'Nächster Spieler',
@@ -62,7 +54,6 @@ const MultiplayerGame: React.FC = () => {
       });
     }
   };
-
 
   return (
     <div className="game-card">
@@ -75,14 +66,11 @@ const MultiplayerGame: React.FC = () => {
 
         <div className="game-area">
           <HangmanCanvas wrongGuesses={currentPlayer.wrongLetters.length} />
-          
+
           <div className="word-display">
-            {currentPlayer.displayWord.length > 0 ? 
-              currentPlayer.displayWord.join(' ') : 
-              '_ _ _'
-            }
+            {currentPlayer.displayWord.length > 0 ? currentPlayer.displayWord.join(' ') : '_ _ _'}
           </div>
-          
+
           {currentPlayer.wrongLetters.length > 0 && (
             <div className="wrong-letters">
               <span>Falsche Buchstaben: </span>
@@ -96,11 +84,11 @@ const MultiplayerGame: React.FC = () => {
         </div>
 
         {gameStatus === 'playing' && !currentPlayer.isCompleted && (
-          <VirtualKeyboard 
+          <VirtualKeyboard
             onLetterClick={handleLetterGuess}
             usedLetters={[
-              ...currentPlayer.displayWord.map(char => char.toLowerCase()),
-              ...currentPlayer.wrongLetters
+              ...currentPlayer.displayWord.map((char) => char.toLowerCase()),
+              ...currentPlayer.wrongLetters,
             ]}
             disabled={keyboardDisabled}
           />
@@ -115,7 +103,7 @@ const MultiplayerGame: React.FC = () => {
             )}
           </div>
         )}
-    </div>
+      </div>
 
       {wrongOverlay && (
         <div className="notify-backdrop" role="dialog" aria-modal="true">
@@ -125,7 +113,9 @@ const MultiplayerGame: React.FC = () => {
             {wrongOverlay.lost && (
               <div className="mb-3 font-semibold text-danger">
                 <span className="mr-2 align-middle">{wrongOverlay.loserIcon}</span>
-                <span className="align-middle">{wrongOverlay.loserName} hat alle Versuche aufgebraucht und verloren.</span>
+                <span className="align-middle">
+                  {wrongOverlay.loserName} hat alle Versuche aufgebraucht und verloren.
+                </span>
               </div>
             )}
             <div className="mb-4 flex justify-center">
@@ -138,14 +128,19 @@ const MultiplayerGame: React.FC = () => {
               <span className="font-semibold">{wrongOverlay.nextName}</span>
             </div>
             <div className="flex justify-end gap-3">
-              <button className="btn btn-accent" onClick={() => { setWrongOverlay(null); nextPlayer(); }}>
+              <button
+                className="btn btn-accent"
+                onClick={() => {
+                  setWrongOverlay(null);
+                  nextPlayer();
+                }}
+              >
                 Weiter
               </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };

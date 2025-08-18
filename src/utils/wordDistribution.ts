@@ -5,7 +5,10 @@ export interface WordEntry {
   word: string;
 }
 
-export function distributeWordsRandomly(players: Player[], wordEntries: WordEntry[]): PlayerGameState[] {
+export function distributeWordsRandomly(
+  players: Player[],
+  wordEntries: WordEntry[],
+): PlayerGameState[] {
   if (players.length !== wordEntries.length) {
     throw new Error('Number of players must match number of word entries');
   }
@@ -75,17 +78,23 @@ export function distributeWordsRandomly(players: Player[], wordEntries: WordEntr
 
 function createDisplayWord(word: string): string[] {
   const displayWord = Array(word.length).fill('_');
-  
+
   // Auto-reveal non-keyboard characters
   const validChars = 'qwertzuiopüasdfghjklöäyxcvbnm';
-  const invalidChars = word.toLowerCase().split('').filter(char => !validChars.includes(char));
-  
-  invalidChars.forEach(char => {
-    word.toLowerCase().split('').forEach((c, index) => {
-      if (c === char) {
-        displayWord[index] = word[index];
-      }
-    });
+  const invalidChars = word
+    .toLowerCase()
+    .split('')
+    .filter((char) => !validChars.includes(char));
+
+  invalidChars.forEach((char) => {
+    word
+      .toLowerCase()
+      .split('')
+      .forEach((c, index) => {
+        if (c === char) {
+          displayWord[index] = word[index];
+        }
+      });
   });
 
   return displayWord;

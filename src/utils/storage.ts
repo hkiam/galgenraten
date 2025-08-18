@@ -2,7 +2,7 @@ import type { Player } from '../types/game';
 
 const STORAGE_KEYS = {
   PLAYERS: 'galgenraten-players',
-  HIGHSCORE: 'galgenraten-highscore'
+  HIGHSCORE: 'galgenraten-highscore',
 };
 
 export const savePlayersToStorage = (players: Player[]): void => {
@@ -18,7 +18,7 @@ export const loadPlayersFromStorage = (): Player[] => {
     const stored = localStorage.getItem(STORAGE_KEYS.PLAYERS);
     const players: Player[] = stored ? JSON.parse(stored) : [];
     // Ensure "active" defaults to true for legacy data
-    return players.map(p => ({ ...p, active: p.active ?? true }));
+    return players.map((p) => ({ ...p, active: p.active ?? true }));
   } catch (error) {
     console.error('Error loading players from localStorage:', error);
     return [];
@@ -26,10 +26,8 @@ export const loadPlayersFromStorage = (): Player[] => {
 };
 
 export const updatePlayerWins = (playerId: string, players: Player[]): Player[] => {
-  return players.map(player => 
-    player.id === playerId 
-      ? { ...player, wins: player.wins + 1 }
-      : player
+  return players.map((player) =>
+    player.id === playerId ? { ...player, wins: player.wins + 1 } : player,
   );
 };
 

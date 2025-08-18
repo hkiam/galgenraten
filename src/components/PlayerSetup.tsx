@@ -35,20 +35,20 @@ const PlayerSetup: React.FC = () => {
         <AppVersion version={__APP_VERSION__} />
       </header>
 
-      {players.filter(p => p.active ?? true).length >= 2 && (
+      {players.filter((p) => p.active ?? true).length >= 2 && (
         <div className="mt-6 text-center">
           <button className="btn btn-accent btn-lg" onClick={startWordInput}>
-            Spiel starten ({players.filter(p => p.active ?? true).length} Spieler)
+            Spiel starten ({players.filter((p) => p.active ?? true).length} Spieler)
           </button>
         </div>
       )}
-      {players.filter(p => p.active ?? true).length < 2 && (
+      {players.filter((p) => p.active ?? true).length < 2 && (
         <p className="mt-2 text-center italic text-slate-500">Mindestens 2 Spieler erforderlich</p>
-      )}      
-      <br/>      
+      )}
+      <br />
 
       <h2 className="section-title">Spieler-Verwaltung</h2>
-      
+
       <div className="mb-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-lg font-semibold">Spieler ({players.length})</h3>
@@ -68,15 +68,19 @@ const PlayerSetup: React.FC = () => {
             {players.map((player) => (
               <div key={player.id} className="card-row">
                 <span className="text-3xl">{player.icon}</span>
-                <span className={`flex-1 font-semibold ${player.active ?? true ? 'text-slate-800' : 'text-slate-400 line-through'}`}>{player.name}</span>
+                <span
+                  className={`flex-1 font-semibold ${(player.active ?? true) ? 'text-slate-800' : 'text-slate-400 line-through'}`}
+                >
+                  {player.name}
+                </span>
                 <span className="font-bold text-warn">🏆 {player.wins}</span>
                 <button
-                  className={`icon-btn ${player.active ?? true ? 'text-green-600' : 'text-slate-400'}`}
+                  className={`icon-btn ${(player.active ?? true) ? 'text-green-600' : 'text-slate-400'}`}
                   onClick={() => togglePlayerActive(player.id)}
-                  title={player.active ?? true ? 'Spieler deaktivieren' : 'Spieler aktivieren'}
-                  aria-label={`${player.name} ${player.active ?? true ? 'deaktivieren' : 'aktivieren'}`}
+                  title={(player.active ?? true) ? 'Spieler deaktivieren' : 'Spieler aktivieren'}
+                  aria-label={`${player.name} ${(player.active ?? true) ? 'deaktivieren' : 'aktivieren'}`}
                 >
-                  {player.active ?? true ? '🟢' : '⚪'}
+                  {(player.active ?? true) ? '🟢' : '⚪'}
                 </button>
                 <button
                   className="icon-btn"
@@ -92,24 +96,21 @@ const PlayerSetup: React.FC = () => {
         )}
       </div>
 
+      <AddPlayerModal isOpen={isModalOpen} onClose={closeModal} />
 
-      <AddPlayerModal 
-        isOpen={isModalOpen}
-        onClose={closeModal}
-      />
-
-      <Modal
-        isOpen={confirmOpen}
-        onClose={cancelDelete}
-        title="Spieler löschen"
-        size="small"
-      >
-        <p className="muted">Möchtest du den Spieler
+      <Modal isOpen={confirmOpen} onClose={cancelDelete} title="Spieler löschen" size="small">
+        <p className="muted">
+          Möchtest du den Spieler
           {pendingDelete ? ` "${pendingDelete.name}" ` : ' '}
-          wirklich löschen?</p>
+          wirklich löschen?
+        </p>
         <div className="mt-6 flex justify-end gap-3">
-          <button className="btn btn-secondary" onClick={cancelDelete}>Abbrechen</button>
-          <button className="btn btn-accent" onClick={confirmDelete}>Löschen</button>
+          <button className="btn btn-secondary" onClick={cancelDelete}>
+            Abbrechen
+          </button>
+          <button className="btn btn-accent" onClick={confirmDelete}>
+            Löschen
+          </button>
         </div>
       </Modal>
     </div>

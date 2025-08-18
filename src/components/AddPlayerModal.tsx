@@ -13,7 +13,7 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
   const [playerName, setPlayerName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('🤖');
   const [error, setError] = useState<string | null>(null);
-  
+
   const availableIcons = getAvailableIcons();
 
   // Reset form when modal opens
@@ -30,7 +30,7 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
       setError('Bitte gib einen Namen ein.');
       return;
     }
-    if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+    if (players.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
       setError('Ein Spieler mit diesem Namen existiert bereits.');
       return;
     }
@@ -50,29 +50,33 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      title="Neuen Spieler hinzufügen"
-      size="medium"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Neuen Spieler hinzufügen" size="medium">
       <div>
         <div className="mb-4">
-          <label htmlFor="player-name" className="mb-2 block font-bold text-slate-800">Name:</label>
+          <label htmlFor="player-name" className="mb-2 block font-bold text-slate-800">
+            Name:
+          </label>
           <input
             id="player-name"
             type="text"
             value={playerName}
-            onChange={(e) => { setPlayerName(e.target.value); if (error) setError(null); }}
+            onChange={(e) => {
+              setPlayerName(e.target.value);
+              if (error) setError(null);
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Spielername eingeben"
             maxLength={20}
             autoFocus
             className="input"
           />
-          {error && <p className="mt-2 text-danger" aria-live="polite">{error}</p>}
+          {error && (
+            <p className="mt-2 text-danger" aria-live="polite">
+              {error}
+            </p>
+          )}
         </div>
-        
+
         <div className="mb-4">
           <label className="mb-2 block font-bold text-slate-800">Icon wählen:</label>
           <div className="flex flex-wrap gap-2">
@@ -89,10 +93,14 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
             ))}
           </div>
         </div>
-        
+
         <div className="mt-6 flex justify-end gap-3">
-          <button className="btn btn-secondary" onClick={handleCancel}>Abbrechen</button>
-          <button className="btn btn-primary" onClick={handleAddPlayer}>Spieler hinzufügen</button>
+          <button className="btn btn-secondary" onClick={handleCancel}>
+            Abbrechen
+          </button>
+          <button className="btn btn-primary" onClick={handleAddPlayer}>
+            Spieler hinzufügen
+          </button>
         </div>
       </div>
     </Modal>

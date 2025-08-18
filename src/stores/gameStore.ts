@@ -35,7 +35,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   initializeStore: () => {
     const savedPlayers = loadPlayersFromStorage();
-    set({ players: savedPlayers.map(p => ({ ...p, active: p.active ?? true })) });
+    set({ players: savedPlayers.map((p) => ({ ...p, active: p.active ?? true })) });
   },
 
   addPlayer: (name: string, icon: string) => {
@@ -47,7 +47,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       wins: 0,
       active: true,
     };
-    
+
     const updatedPlayers = [...state.players, newPlayer];
     set({ players: updatedPlayers });
     savePlayersToStorage(updatedPlayers);
@@ -55,27 +55,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   removePlayer: (playerId: string) => {
     const state = get();
-    const updatedPlayers = state.players.filter(p => p.id !== playerId);
+    const updatedPlayers = state.players.filter((p) => p.id !== playerId);
     set({ players: updatedPlayers });
     savePlayersToStorage(updatedPlayers);
   },
 
   togglePlayerActive: (playerId: string) => {
     const state = get();
-    const updated = state.players.map(p => p.id === playerId ? { ...p, active: !(p.active ?? true) } : p);
+    const updated = state.players.map((p) =>
+      p.id === playerId ? { ...p, active: !(p.active ?? true) } : p,
+    );
     set({ players: updated });
     savePlayersToStorage(updated);
   },
 
   startWordInput: () => {
     const state = get();
-    const activePlayers = state.players.filter(p => p.active ?? true);
+    const activePlayers = state.players.filter((p) => p.active ?? true);
     if (activePlayers.length < 2) {
       // Guard: nicht starten, wenn zu wenige aktive Spieler
       return;
     }
-    
-    const currentGamePlayers: PlayerGameState[] = activePlayers.map(player => ({
+
+    const currentGamePlayers: PlayerGameState[] = activePlayers.map((player) => ({
       playerId: player.id,
       wordToGuess: '',
       displayWord: [],
@@ -93,24 +95,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   setPlayerWord: (playerId: string, word: string) => {
     const state = get();
-    
+
     if (!word || word.trim().length < 3) {
       // Ungültige Eingabe wird auf UI-Ebene validiert
       return;
     }
 
     const trimmedWord = word.trim();
-    
+
     // Store the word entry temporarily - we'll distribute randomly when all words are collected
-    const updatedGamePlayers = state.currentGamePlayers.map(player =>
-      player.playerId === playerId
-        ? { ...player, wordToGuess: trimmedWord }
-        : player
+    const updatedGamePlayers = state.currentGamePlayers.map((player) =>
+      player.playerId === playerId ? { ...player, wordToGuess: trimmedWord } : player,
     );
 
     const activeCount = state.currentGamePlayers.length;
     const nextIndex = Math.min(state.wordInputIndex + 1, activeCount);
-    
+
     set({
       currentGamePlayers: updatedGamePlayers,
       wordInputIndex: nextIndex,
@@ -119,11 +119,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   startGame: () => {
     const state = get();
-    
+
     // Create word entries from collected words
     const wordEntries: WordEntry[] = state.currentGamePlayers
-      .filter(player => player.wordToGuess !== '')
-      .map(player => ({
+      .filter((player) => player.wordToGuess !== '')
+      .map((player) => ({
         playerId: player.playerId,
         word: player.wordToGuess,
       }));
@@ -140,22 +140,25 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   guessLetter: (letter: string) => {
     const state = get();
-    
+
     if (state.gameStatus !== 'playing') return;
-    
+
     const currentPlayer = state.currentGamePlayers[state.currentPlayerIndex];
     if (!currentPlayer || currentPlayer.isCompleted) return;
 
     const lowerLetter = letter.toLowerCase();
-    
+
     // Prevent duplicate guesses
-    if (currentPlayer.displayWord.includes(letter) || currentPlayer.wrongLetters.includes(lowerLetter)) {
+    if (
+      currentPlayer.displayWord.includes(letter) ||
+      currentPlayer.wrongLetters.includes(lowerLetter)
+    ) {
       return;
     }
 
     const wordToGuessLower = currentPlayer.wordToGuess.toLowerCase();
     let updatedCurrentPlayer = { ...currentPlayer };
-    
+
     if (wordToGuessLower.includes(lowerLetter)) {
       // Correct guess - update display word
       const newDisplayWord = [...currentPlayer.displayWord];
@@ -166,7 +169,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
 
       const hasWon = currentPlayer.wordToGuess === newDisplayWord.join('');
-      
+
       updatedCurrentPlayer = {
         ...currentPlayer,
         displayWord: newDisplayWord,
@@ -176,19 +179,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       if (hasWon) {
         // Player won - update highscore and end game
-        const winnerData = state.players.find(p => p.id === currentPlayer.playerId);
+        const winnerData = state.players.find((p) => p.id === currentPlayer.playerId);
         const updatedPlayers = updatePlayerWins(currentPlayer.playerId, state.players);
-        
+
         set({
           currentGamePlayers: state.currentGamePlayers.map((p, i) =>
-            i === state.currentPlayerIndex ? updatedCurrentPlayer : p
+            i === state.currentPlayerIndex ? updatedCurrentPlayer : p,
           ),
           gamePhase: 'finished',
           gameStatus: 'won',
           winner: winnerData || null,
           players: updatedPlayers,
         });
-        
+
         savePlayersToStorage(updatedPlayers);
         return;
       }
@@ -196,7 +199,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       // Wrong guess
       const newWrongLetters = [...currentPlayer.wrongLetters, lowerLetter];
       const gameLost = newWrongLetters.length >= state.maxTries;
-      
+
       updatedCurrentPlayer = {
         ...currentPlayer,
         wrongLetters: newWrongLetters,
@@ -207,7 +210,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     set({
       currentGamePlayers: state.currentGamePlayers.map((p, i) =>
-        i === state.currentPlayerIndex ? updatedCurrentPlayer : p
+        i === state.currentPlayerIndex ? updatedCurrentPlayer : p,
       ),
     });
   },
@@ -215,17 +218,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
   nextPlayer: () => {
     const state = get();
     const nextIndex = (state.currentPlayerIndex + 1) % state.currentGamePlayers.length;
-    
+
     // Skip completed players
     let finalIndex = nextIndex;
     let attempts = 0;
-    while (state.currentGamePlayers[finalIndex]?.isCompleted && attempts < state.currentGamePlayers.length) {
+    while (
+      state.currentGamePlayers[finalIndex]?.isCompleted &&
+      attempts < state.currentGamePlayers.length
+    ) {
       finalIndex = (finalIndex + 1) % state.currentGamePlayers.length;
       attempts++;
     }
-    
+
     // Check if all players are completed
-    const allCompleted = state.currentGamePlayers.every(p => p.isCompleted);
+    const allCompleted = state.currentGamePlayers.every((p) => p.isCompleted);
     if (allCompleted) {
       set({
         gamePhase: 'finished',
@@ -233,7 +239,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
       return;
     }
-    
+
     set({ currentPlayerIndex: finalIndex });
   },
 
@@ -245,17 +251,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
   getCurrentPlayerData: () => {
     const state = get();
     const currentPlayer = state.currentGamePlayers[state.currentPlayerIndex];
-    return currentPlayer ? state.players.find(p => p.id === currentPlayer.playerId) || null : null;
+    return currentPlayer
+      ? state.players.find((p) => p.id === currentPlayer.playerId) || null
+      : null;
   },
 
   getActivePlayers: () => {
-    return get().players.filter(p => p.active ?? true);
+    return get().players.filter((p) => p.active ?? true);
   },
 
   resetGame: () => {
-    set({ 
-      ...initialState, 
-      players: get().players // Keep existing players
+    set({
+      ...initialState,
+      players: get().players, // Keep existing players
     });
   },
 }));
