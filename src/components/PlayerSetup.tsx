@@ -20,7 +20,17 @@ const PlayerSetup: React.FC = () => {
       <h2 className="section-title">Spieler-Verwaltung</h2>
       
       <div className="mb-4">
-        <h3 className="mb-2 text-lg font-semibold">Spieler ({players.length})</h3>
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Spieler ({players.length})</h3>
+          <button
+            className="icon-btn"
+            onClick={openModal}
+            aria-label="Neuen Spieler hinzufügen"
+            title="Spieler hinzufügen"
+          >
+            ➕
+          </button>
+        </div>
         {players.length === 0 ? (
           <p className="p-8 text-center italic text-slate-500">Noch keine Spieler hinzugefügt</p>
         ) : (
@@ -44,16 +54,7 @@ const PlayerSetup: React.FC = () => {
         )}
       </div>
 
-      <div className="mb-6 text-center">
-        <button 
-          className="btn btn-primary btn-lg"
-          onClick={openModal}
-          aria-label="Neuen Spieler hinzufügen"
-        >
-          <span className="text-lg">➕</span>
-          <span>Spieler hinzufügen</span>
-        </button>
-      </div>      
+      {/* add-player Button befindet sich jetzt in der Kopfzeile */}
 
       {players.length >= 2 && (
         <div className="mt-6 text-center">
