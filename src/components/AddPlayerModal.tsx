@@ -12,6 +12,7 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
   const { players, addPlayer } = useGameStore();
   const [playerName, setPlayerName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('🤖');
+  const [error, setError] = useState<string | null>(null);
   
   const availableIcons = getAvailableIcons();
 
@@ -24,17 +25,17 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const handleAddPlayer = () => {
-    if (!playerName.trim()) {
-      alert('Bitte geben Sie einen Namen ein!');
+    const name = playerName.trim();
+    if (!name) {
+      setError('Bitte gib einen Namen ein.');
       return;
     }
-    
-    if (players.some(p => p.name.toLowerCase() === playerName.trim().toLowerCase())) {
-      alert('Ein Spieler mit diesem Namen existiert bereits!');
+    if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+      setError('Ein Spieler mit diesem Namen existiert bereits.');
       return;
     }
-
-    addPlayer(playerName.trim(), selectedIcon);
+    setError(null);
+    addPlayer(name, selectedIcon);
     onClose();
   };
 
@@ -62,13 +63,14 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
             id="player-name"
             type="text"
             value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
+            onChange={(e) => { setPlayerName(e.target.value); if (error) setError(null); }}
             onKeyDown={handleKeyDown}
             placeholder="Spielername eingeben"
             maxLength={20}
             autoFocus
             className="input"
           />
+          {error && <p className="mt-2 text-danger" aria-live="polite">{error}</p>}
         </div>
         
         <div className="mb-4">
