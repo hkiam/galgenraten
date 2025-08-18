@@ -9,6 +9,10 @@ const PlayerSetup: React.FC = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const handleRemovePlayer = (playerId: string, name: string) => {
+    const confirmed = window.confirm(`Spieler "${name}" wirklich löschen?`);
+    if (confirmed) removePlayer(playerId);
+  };
 
   return (
     <div className="card">
@@ -50,7 +54,7 @@ const PlayerSetup: React.FC = () => {
                 </button>
                 <button
                   className="icon-btn"
-                  onClick={() => removePlayer(player.id)}
+                  onClick={() => handleRemovePlayer(player.id, player.name)}
                   title="Spieler entfernen"
                   aria-label={`${player.name} entfernen`}
                 >
