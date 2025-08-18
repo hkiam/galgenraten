@@ -116,20 +116,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
         word: player.wordToGuess,
       }));
 
-    try {
-      // Distribute words randomly ensuring no player gets their own word
-      const distributedGamePlayers = distributeWordsRandomly(state.players, wordEntries);
-      
-      set({
-        currentGamePlayers: distributedGamePlayers,
-        gamePhase: 'playing',
-        gameStatus: 'playing',
-        currentPlayerIndex: 0,
-      });
-    } catch (error) {
-      console.error('Error distributing words:', error);
-      alert('Fehler beim Verteilen der Wörter. Bitte versuchen Sie es erneut.');
-    }
+    // Distribute words ensuring no player gets their own word
+    const distributedGamePlayers = distributeWordsRandomly(state.players, wordEntries);
+    set({
+      currentGamePlayers: distributedGamePlayers,
+      gamePhase: 'playing',
+      gameStatus: 'playing',
+      currentPlayerIndex: 0,
+    });
   },
 
   guessLetter: (letter: string) => {

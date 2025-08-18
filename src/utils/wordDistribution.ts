@@ -10,41 +10,59 @@ export function distributeWordsRandomly(players: Player[], wordEntries: WordEntr
     throw new Error('Number of players must match number of word entries');
   }
 
-  if (players.length < 2) {
+  const n = players.length;
+  if (n < 2) {
     throw new Error('Need at least 2 players for word distribution');
   }
 
-  // Create a copy of word entries to shuffle
-  const availableWords = [...wordEntries];
-  const result: PlayerGameState[] = [];
+  // Build a random permutation of word entries, then fix any self-assignments (derangement).
+  const indices = Array.from({ length: n }, (_, i) => i);
+  // Fisher–Yates shuffle
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
 
-  // For each player, find a word that's not their own
-  for (const player of players) {
-    // Filter out words that belong to this player
-    const validWords = availableWords.filter(entry => entry.playerId !== player.id);
-    
-    if (validWords.length === 0) {
-      // This should not happen with proper game logic, but handle edge case
-      throw new Error(`No valid word available for player ${player.name}`);
+  // Collect positions where a player would get their own word
+  const fixed: number[] = [];
+  for (let i = 0; i < n; i++) {
+    if (wordEntries[indices[i]].playerId === players[i].id) fixed.push(i);
+  }
+
+  if (fixed.length === n) {
+    // Completely fixed (very unlikely): rotate last two
+    [indices[n - 1], indices[n - 2]] = [indices[n - 2], indices[n - 1]];
+  } else if (fixed.length === 1) {
+    // Swap with some other position
+    const i = fixed[0];
+    const j = (i + 1) % n; // safe since n>=2 and players have unique ids
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  } else if (fixed.length > 1) {
+    // Rotate the assignments among fixed positions
+    const firstIndexValue = indices[fixed[0]];
+    for (let k = 0; k < fixed.length - 1; k++) {
+      indices[fixed[k]] = indices[fixed[k + 1]];
     }
+    indices[fixed[fixed.length - 1]] = firstIndexValue;
+  }
 
-    // Randomly select a word from valid options
-    const randomIndex = Math.floor(Math.random() * validWords.length);
-    const selectedWord = validWords[randomIndex];
-
-    // Remove the selected word from available words
-    const wordIndex = availableWords.findIndex(entry => 
-      entry.playerId === selectedWord.playerId && entry.word === selectedWord.word
-    );
-    availableWords.splice(wordIndex, 1);
-
-    // Create display word with non-keyboard characters revealed
-    const displayWord = createDisplayWord(selectedWord.word);
-
-    // Create player game state
+  // Build result using the deranged assignment
+  const result: PlayerGameState[] = [];
+  for (let i = 0; i < n; i++) {
+    const assigned = wordEntries[indices[i]];
+    // Safety check: ensure no one gets their own word
+    if (assigned.playerId === players[i].id) {
+      // As a final guard (should not happen), swap with the next index
+      const j = (i + 1) % n;
+      const tmp = indices[i];
+      indices[i] = indices[j];
+      indices[j] = tmp;
+    }
+    const word = wordEntries[indices[i]].word;
+    const displayWord = createDisplayWord(word);
     result.push({
-      playerId: player.id,
-      wordToGuess: selectedWord.word,
+      playerId: players[i].id,
+      wordToGuess: word,
       displayWord,
       wrongLetters: [],
       isCompleted: false,
