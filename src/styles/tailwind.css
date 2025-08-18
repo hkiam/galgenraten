@@ -70,7 +70,7 @@
   /* Game screen tokens */
   .game-card { @apply card p-0; }
   .current-player-info { @apply flex items-center gap-2 mb-4 text-lg; }
-  .game-area { @apply flex flex-col items-center gap-4 p-6 border border-slate-200 rounded-xl bg-white; }
+  .game-area { @apply flex flex-col items-center gap-3 sm:gap-4 p-3 sm:p-4 md:p-6 border border-slate-200 rounded-xl bg-white; }
   .word-display { @apply text-2xl md:text-3xl font-mono tracking-widest; }
   .wrong-letters { @apply text-slate-600; }
   .tries-remaining { @apply text-slate-600; }
