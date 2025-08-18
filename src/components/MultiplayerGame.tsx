@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGameStore } from '../stores/gameStore';
 import HangmanCanvas from './HangmanCanvas';
 import VirtualKeyboard from './VirtualKeyboard';
@@ -9,29 +9,41 @@ const MultiplayerGame: React.FC = () => {
     getCurrentPlayerData,
     guessLetter,
     nextPlayer,
-    gameStatus
+    gameStatus,
+    players,
   } = useGameStore();
 
   const currentPlayer = getCurrentPlayer();
   const currentPlayerData = getCurrentPlayerData();
-  
+  const [wrongOverlay, setWrongOverlay] = useState<null | { letter: string; nextName: string; nextIcon: string }>(null);
+  const keyboardDisabled = !!wrongOverlay || gameStatus !== 'playing' || (currentPlayer?.isCompleted ?? false);
+
   if (!currentPlayer || !currentPlayerData) {
     return <div>Fehler: Kein aktiver Spieler gefunden</div>;
   }
 
   const handleLetterGuess = (letter: string) => {
+    const wasCorrect = currentPlayer.wordToGuess.toLowerCase().includes(letter.toLowerCase());
     guessLetter(letter);
-    
-    // Auto-advance to next player after a wrong guess or completed word
-    setTimeout(() => {
-      const updatedCurrentPlayer = getCurrentPlayer();
-      if (updatedCurrentPlayer && (
-        updatedCurrentPlayer.isCompleted || 
-        currentPlayer.wrongLetters.length < updatedCurrentPlayer.wrongLetters.length
-      )) {
-        nextPlayer();
+
+    // If wrong, show explicit overlay with next player's info
+    if (!wasCorrect) {
+      // Read updated game state to compute next player (skip completed)
+      const { currentPlayerIndex, currentGamePlayers } = useGameStore.getState();
+      let nextIndex = (currentPlayerIndex + 1) % currentGamePlayers.length;
+      let attempts = 0;
+      while (currentGamePlayers[nextIndex]?.isCompleted && attempts < currentGamePlayers.length) {
+        nextIndex = (nextIndex + 1) % currentGamePlayers.length;
+        attempts++;
       }
-    }, 1000);
+      const nextGamePlayer = currentGamePlayers[nextIndex];
+      const nextData = players.find(p => p.id === nextGamePlayer?.playerId);
+      setWrongOverlay({
+        letter,
+        nextName: nextData?.name ?? 'Nächster Spieler',
+        nextIcon: nextData?.icon ?? '➡️',
+      });
+    }
   };
 
 
@@ -73,6 +85,7 @@ const MultiplayerGame: React.FC = () => {
               ...currentPlayer.displayWord.map(char => char.toLowerCase()),
               ...currentPlayer.wrongLetters
             ]}
+            disabled={keyboardDisabled}
           />
         )}
 
@@ -85,7 +98,28 @@ const MultiplayerGame: React.FC = () => {
             )}
           </div>
         )}
-      </div>
+    </div>
+
+      {wrongOverlay && (
+        <div className="notify-backdrop" role="dialog" aria-modal="true">
+          <div className="notify-card update max-w-lg text-left">
+            <h3 className="mb-2 text-xl font-semibold">Falscher Buchstabe!</h3>
+            <p className="muted mb-4">„{wrongOverlay.letter.toUpperCase()}“ kommt nicht vor. Übergabe an:</p>
+            <div className="mb-4 flex items-center gap-2 text-lg">
+              <span>{wrongOverlay.nextIcon}</span>
+              <span className="font-semibold">{wrongOverlay.nextName}</span>
+            </div>
+            <div className="mb-4 flex justify-center">
+              <HangmanCanvas wrongGuesses={getCurrentPlayer()?.wrongLetters.length ?? 0} />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button className="btn btn-accent" onClick={() => { setWrongOverlay(null); nextPlayer(); }}>
+                Weiter
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

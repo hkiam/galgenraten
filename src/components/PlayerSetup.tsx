@@ -42,6 +42,9 @@ const PlayerSetup: React.FC = () => {
           </button>
         </div>
       )}
+      {players.filter(p => p.active ?? true).length < 2 && (
+        <p className="mt-2 text-center italic text-slate-500">Mindestens 2 Spieler erforderlich</p>
+      )}      
       <br/>      
 
       <h2 className="section-title">Spieler-Verwaltung</h2>
@@ -89,10 +92,6 @@ const PlayerSetup: React.FC = () => {
         )}
       </div>
 
-      
-      {players.filter(p => p.active ?? true).length === 1 && (
-        <p className="mt-2 text-center italic text-slate-500">Mindestens 2 Spieler erforderlich</p>
-      )}
 
       <AddPlayerModal 
         isOpen={isModalOpen}
