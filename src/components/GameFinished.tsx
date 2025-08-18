@@ -55,7 +55,7 @@ const GameFinished: React.FC = () => {
                   {gamePlayer.hasWon ? (
                     <span className="won-badge">🏆 Gewonnen</span>
                   ) : (
-                    <span className="lost-badge">💀 Verloren ({gamePlayer.wrongLetters.length}/11)</span>
+                    <span className="lost-badge">💀 Verloren</span>
                   )}
                 </span>
               </div>

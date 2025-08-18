@@ -16,7 +16,17 @@ const MultiplayerGame: React.FC = () => {
 
   const currentPlayer = getCurrentPlayer();
   const currentPlayerData = getCurrentPlayerData();
-  const [wrongOverlay, setWrongOverlay] = useState<null | { letter: string; nextName: string; nextIcon: string }>(null);
+  const [wrongOverlay, setWrongOverlay] = useState<
+    | null
+    | {
+        letter: string;
+        nextName: string;
+        nextIcon: string;
+        lost: boolean;
+        loserName: string;
+        loserIcon: string;
+      }
+  >(null);
   const keyboardDisabled = !!wrongOverlay || gameStatus !== 'playing' || (currentPlayer?.isCompleted ?? false);
 
   if (!currentPlayer || !currentPlayerData) {
@@ -32,6 +42,8 @@ const MultiplayerGame: React.FC = () => {
       wrongFeedback();
       // Read updated game state to compute next player (skip completed)
       const { currentPlayerIndex, currentGamePlayers } = useGameStore.getState();
+      const updatedCurrent = currentGamePlayers[currentPlayerIndex];
+      const currentData = players.find(p => p.id === updatedCurrent?.playerId);
       let nextIndex = (currentPlayerIndex + 1) % currentGamePlayers.length;
       let attempts = 0;
       while (currentGamePlayers[nextIndex]?.isCompleted && attempts < currentGamePlayers.length) {
@@ -44,6 +56,9 @@ const MultiplayerGame: React.FC = () => {
         letter,
         nextName: nextData?.name ?? 'Nächster Spieler',
         nextIcon: nextData?.icon ?? '➡️',
+        lost: !!(updatedCurrent && updatedCurrent.isCompleted && !updatedCurrent.hasWon),
+        loserName: currentData?.name ?? 'Aktueller Spieler',
+        loserIcon: currentData?.icon ?? '💀',
       });
     }
   };
@@ -106,13 +121,21 @@ const MultiplayerGame: React.FC = () => {
         <div className="notify-backdrop" role="dialog" aria-modal="true">
           <div className="notify-card update max-w-lg text-left">
             <h3 className="mb-2 text-xl font-semibold">Falscher Buchstabe!</h3>
-            <p className="muted mb-4">„{wrongOverlay.letter.toUpperCase()}“ kommt nicht vor. Übergabe an:</p>
+            <p className="muted mb-2">„{wrongOverlay.letter.toUpperCase()}“ kommt nicht vor.</p>
+            {wrongOverlay.lost && (
+              <div className="mb-3 font-semibold text-danger">
+                <span className="mr-2 align-middle">{wrongOverlay.loserIcon}</span>
+                <span className="align-middle">{wrongOverlay.loserName} hat alle Versuche aufgebraucht und verloren.</span>
+              </div>
+            )}
+            <div className="mb-4 flex justify-center">
+              <HangmanCanvas wrongGuesses={getCurrentPlayer()?.wrongLetters.length ?? 0} />
+            </div>
+
+            <p className="muted mb-2">Übergabe an:</p>
             <div className="mb-4 flex items-center gap-2 text-lg">
               <span>{wrongOverlay.nextIcon}</span>
               <span className="font-semibold">{wrongOverlay.nextName}</span>
-            </div>
-            <div className="mb-4 flex justify-center">
-              <HangmanCanvas wrongGuesses={getCurrentPlayer()?.wrongLetters.length ?? 0} />
             </div>
             <div className="flex justify-end gap-3">
               <button className="btn btn-accent" onClick={() => { setWrongOverlay(null); nextPlayer(); }}>
