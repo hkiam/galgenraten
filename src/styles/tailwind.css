@@ -60,7 +60,7 @@
   .progress-track { @apply h-2 bg-slate-200 rounded-md overflow-hidden; }
   .progress-value { @apply h-full bg-gradient-to-r from-success to-primary transition-[width]; }
   .player-indicator { @apply flex items-center gap-2 mb-4 text-lg; }
-  .word-input-form { @apply flex gap-3; }
+  .word-input-form { @apply grid gap-3; }
   .players-status { @apply mt-8; }
   .players-status-grid { @apply grid gap-3 grid-cols-1 sm:grid-cols-2; }
   .player-status { @apply grid grid-cols-[auto_1fr_auto] items-center gap-3 p-4 border-2 border-slate-200 rounded-lg; }
