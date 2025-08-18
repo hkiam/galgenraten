@@ -10,6 +10,7 @@ interface GameStore extends GameState {
   startWordInput: () => void;
   setPlayerWord: (playerId: string, word: string) => void;
   startGame: () => void;
+  abortGame: () => void;
   guessLetter: (letter: string) => void;
   nextPlayer: () => void;
   resetGame: () => void;
@@ -139,6 +140,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
       gamePhase: 'playing',
       gameStatus: 'playing',
       currentPlayerIndex: 0,
+    });
+  },
+
+  abortGame: () => {
+    const state = get();
+    if (state.gameStatus !== 'playing') return;
+    set({
+      gamePhase: 'finished',
+      gameStatus: 'lost',
+      winner: null,
     });
   },
 

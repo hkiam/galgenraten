@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useGameStore } from '../stores/gameStore';
 import HangmanCanvas from './HangmanCanvas';
 import { wrongFeedback } from '../utils/feedback';
+import Modal from './Modal';
 import VirtualKeyboard from './VirtualKeyboard';
 
 const MultiplayerGame: React.FC = () => {
-  const { getCurrentPlayer, getCurrentPlayerData, guessLetter, nextPlayer, gameStatus, players } =
+  const { getCurrentPlayer, getCurrentPlayerData, guessLetter, nextPlayer, gameStatus, players, abortGame } =
     useGameStore();
 
   const currentPlayer = getCurrentPlayer();
@@ -18,6 +19,7 @@ const MultiplayerGame: React.FC = () => {
     loserName: string;
     loserIcon: string;
   }>(null);
+  const [confirmAbort, setConfirmAbort] = useState(false);
   const keyboardDisabled =
     !!wrongOverlay || gameStatus !== 'playing' || (currentPlayer?.isCompleted ?? false);
 
@@ -62,6 +64,12 @@ const MultiplayerGame: React.FC = () => {
           <span className="text-2xl">{currentPlayerData.icon}</span>
           <span className="font-semibold text-slate-800">{currentPlayerData.name}</span>
           <span className="muted">ist dran</span>
+        </div>
+
+        <div className="mb-3 flex justify-end">
+          <button className="btn btn-secondary" onClick={() => setConfirmAbort(true)}>
+            Spiel abbrechen
+          </button>
         </div>
 
         <div className="game-area">
@@ -141,6 +149,26 @@ const MultiplayerGame: React.FC = () => {
           </div>
         </div>
       )}
+
+      <Modal isOpen={confirmAbort} onClose={() => setConfirmAbort(false)} title="Spiel abbrechen" size="small">
+        <p className="muted">
+          Möchtest du das laufende Spiel wirklich beenden? Der aktuelle Durchgang wird ohne Sieger beendet.
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button className="btn btn-secondary" onClick={() => setConfirmAbort(false)}>
+            Abbrechen
+          </button>
+          <button
+            className="btn btn-accent"
+            onClick={() => {
+              setConfirmAbort(false);
+              abortGame();
+            }}
+          >
+            Spiel beenden
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
