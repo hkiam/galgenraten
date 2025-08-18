@@ -41,13 +41,6 @@ const MultiplayerGame: React.FC = () => {
 
   return (
     <div className="multiplayer-game">
-      <div className="game-header">
-        <h2>Galgenraten - Mehrspieler</h2>
-        <div className="active-players-info">
-          {activePlayersCount} von {currentGamePlayers.length} Spielern noch aktiv
-        </div>
-      </div>
-
       <div className="current-player-section">
         <div className="current-player-info">
           <span className="player-icon">{currentPlayerData.icon}</span>
@@ -98,51 +91,6 @@ const MultiplayerGame: React.FC = () => {
         )}
       </div>
 
-      <div className="all-players-overview">
-        <h3>Spieler-Übersicht</h3>
-        <div className="players-overview-grid">
-          {currentGamePlayers.map((gamePlayer, index) => {
-            const playerData = players.find(p => p.id === gamePlayer.playerId);
-            if (!playerData) return null;
-            
-            const isCurrent = index === currentPlayerIndex;
-            
-            return (
-              <div 
-                key={gamePlayer.playerId}
-                className={`player-overview ${isCurrent ? 'current' : ''} ${gamePlayer.isCompleted ? 'completed' : ''}`}
-              >
-                <div className="player-info">
-                  <span className="player-icon">{playerData.icon}</span>
-                  <span className="player-name">{playerData.name}</span>
-                </div>
-                
-                <div className="player-word">
-                  {gamePlayer.displayWord.join(' ') || '_ _ _'}
-                </div>
-                
-                <div className="player-status">
-                  {gamePlayer.isCompleted ? (
-                    gamePlayer.hasWon ? '🏆 Gewonnen' : '💀 Verloren'
-                  ) : (
-                    `${gamePlayer.wrongLetters.length}/11 Fehler`
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="game-controls">
-        <button 
-          className="next-player-button"
-          onClick={nextPlayer}
-          disabled={currentPlayer.isCompleted}
-        >
-          Nächster Spieler
-        </button>
-      </div>
     </div>
   );
 };
