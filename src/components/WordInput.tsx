@@ -74,7 +74,7 @@ const WordInput: React.FC = () => {
         <div className="player-indicator">
           <span className="text-2xl">{currentInputPlayer?.icon}</span>
           <span className="font-semibold text-slate-800">{currentInputPlayer?.name}</span>
-          <span className="muted">gibt ein Wort für die anderen Spieler ein</span>
+          <span className="muted pl-6">gibt ein Wort für die anderen Spieler ein</span>
         </div>
 
         <div className="word-input-form">

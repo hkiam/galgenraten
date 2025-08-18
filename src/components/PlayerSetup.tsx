@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../stores/gameStore';
 import AddPlayerModal from './AddPlayerModal';
+import Modal from './Modal';
 import AppVersion from './AppVersion';
 
 const PlayerSetup: React.FC = () => {
   const { players, removePlayer, startWordInput, togglePlayerActive } = useGameStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const handleRemovePlayer = (playerId: string, name: string) => {
-    const confirmed = window.confirm(`Spieler "${name}" wirklich löschen?`);
-    if (confirmed) removePlayer(playerId);
+  const askRemovePlayer = (playerId: string, name: string) => {
+    setPendingDelete({ id: playerId, name });
+    setConfirmOpen(true);
+  };
+  const confirmDelete = () => {
+    if (pendingDelete) {
+      removePlayer(pendingDelete.id);
+    }
+    setConfirmOpen(false);
+    setPendingDelete(null);
+  };
+  const cancelDelete = () => {
+    setConfirmOpen(false);
+    setPendingDelete(null);
   };
 
   return (
@@ -20,6 +34,15 @@ const PlayerSetup: React.FC = () => {
         <h1 className="mb-2 text-3xl font-bold text-slate-800">Galgenraten - Mehrspieler</h1>
         <AppVersion version={__APP_VERSION__} />
       </header>
+
+      {players.filter(p => p.active ?? true).length >= 2 && (
+        <div className="mt-6 text-center">
+          <button className="btn btn-accent btn-lg" onClick={startWordInput}>
+            Spiel starten ({players.filter(p => p.active ?? true).length} Spieler)
+          </button>
+        </div>
+      )}
+      <br/>      
 
       <h2 className="section-title">Spieler-Verwaltung</h2>
       
@@ -54,7 +77,7 @@ const PlayerSetup: React.FC = () => {
                 </button>
                 <button
                   className="icon-btn"
-                  onClick={() => handleRemovePlayer(player.id, player.name)}
+                  onClick={() => askRemovePlayer(player.id, player.name)}
                   title="Spieler entfernen"
                   aria-label={`${player.name} entfernen`}
                 >
@@ -66,15 +89,6 @@ const PlayerSetup: React.FC = () => {
         )}
       </div>
 
-      {/* add-player Button befindet sich jetzt in der Kopfzeile */}
-
-      {players.filter(p => p.active ?? true).length >= 2 && (
-        <div className="mt-6 text-center">
-          <button className="btn btn-accent btn-lg" onClick={startWordInput}>
-            Spiel starten ({players.filter(p => p.active ?? true).length} Spieler)
-          </button>
-        </div>
-      )}
       
       {players.filter(p => p.active ?? true).length === 1 && (
         <p className="mt-2 text-center italic text-slate-500">Mindestens 2 Spieler erforderlich</p>
@@ -84,6 +98,21 @@ const PlayerSetup: React.FC = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
       />
+
+      <Modal
+        isOpen={confirmOpen}
+        onClose={cancelDelete}
+        title="Spieler löschen"
+        size="small"
+      >
+        <p className="muted">Möchtest du den Spieler
+          {pendingDelete ? ` "${pendingDelete.name}" ` : ' '}
+          wirklich löschen?</p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button className="btn btn-secondary" onClick={cancelDelete}>Abbrechen</button>
+          <button className="btn btn-accent" onClick={confirmDelete}>Löschen</button>
+        </div>
+      </Modal>
     </div>
   );
 };
