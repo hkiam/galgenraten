@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from './gameStore';
-import type { Player } from '../types/game';
+
 
 function resetStore() {
   useGameStore.setState({
