@@ -9,13 +9,12 @@ const PlayerSetup: React.FC = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const APP_VERSION = '1.0.0'; // Replace with dynamic version if needed
 
   return (
     <div className="player-setup">
       <header className="app-header">
         <h1>Galgenraten - Mehrspieler</h1>
-        <AppVersion version={APP_VERSION} />
+        <AppVersion version={__APP_VERSION__} />
       </header>
 
       <h2>Spieler-Verwaltung</h2>
