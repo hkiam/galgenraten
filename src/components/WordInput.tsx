@@ -12,10 +12,11 @@ const WordInput: React.FC = () => {
   
   const [word, setWord] = useState('');
   
-  const currentInputPlayer = players[wordInputIndex];
+  const activePlayers = players.filter(p => p.active ?? true);
+  const currentInputPlayer = activePlayers[wordInputIndex];
   
   const wordsEntered = currentGamePlayers.filter(gp => gp.wordToGuess !== '').length;
-  const allWordsEntered = wordsEntered === players.length;
+  const allWordsEntered = wordsEntered === activePlayers.length;
 
   useEffect(() => {
     if (allWordsEntered) {
@@ -62,7 +63,7 @@ const WordInput: React.FC = () => {
       
       <div className="progress">
         <div className="progress-text">
-          {wordsEntered} von {players.length} Wörtern eingegeben
+          {wordsEntered} von {activePlayers.length} Wörtern eingegeben
         </div>
         <div className="progress-track">
           <div className="progress-value" style={{ width: `${(wordsEntered / players.length) * 100}%` }} />
@@ -94,7 +95,7 @@ const WordInput: React.FC = () => {
       <div className="players-status">
         <h3>Status der Spieler:</h3>
         <div className="players-status-grid">
-          {players.map((player, index) => {
+          {activePlayers.map((player, index) => {
             const gamePlayer = currentGamePlayers.find(gp => gp.playerId === player.id);
             const hasEnteredWord = gamePlayer?.wordToGuess !== '';
             const isCurrentPlayer = index === wordInputIndex;

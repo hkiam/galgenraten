@@ -3,6 +3,7 @@ export interface Player {
   name: string;
   icon: string;
   wins: number;
+  active?: boolean; // optional for backward compatibility; default true
 }
 
 export interface PlayerGameState {

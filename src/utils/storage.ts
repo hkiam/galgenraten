@@ -16,7 +16,9 @@ export const savePlayersToStorage = (players: Player[]): void => {
 export const loadPlayersFromStorage = (): Player[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.PLAYERS);
-    return stored ? JSON.parse(stored) : [];
+    const players: Player[] = stored ? JSON.parse(stored) : [];
+    // Ensure "active" defaults to true for legacy data
+    return players.map(p => ({ ...p, active: p.active ?? true }));
   } catch (error) {
     console.error('Error loading players from localStorage:', error);
     return [];

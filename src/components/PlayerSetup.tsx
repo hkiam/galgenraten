@@ -4,7 +4,7 @@ import AddPlayerModal from './AddPlayerModal';
 import AppVersion from './AppVersion';
 
 const PlayerSetup: React.FC = () => {
-  const { players, removePlayer, startWordInput } = useGameStore();
+  const { players, removePlayer, startWordInput, togglePlayerActive } = useGameStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -38,8 +38,16 @@ const PlayerSetup: React.FC = () => {
             {players.map((player) => (
               <div key={player.id} className="card-row">
                 <span className="text-3xl">{player.icon}</span>
-                <span className="flex-1 font-semibold text-slate-800">{player.name}</span>
+                <span className={`flex-1 font-semibold ${player.active ?? true ? 'text-slate-800' : 'text-slate-400 line-through'}`}>{player.name}</span>
                 <span className="font-bold text-warn">🏆 {player.wins}</span>
+                <button
+                  className={`icon-btn ${player.active ?? true ? 'text-green-600' : 'text-slate-400'}`}
+                  onClick={() => togglePlayerActive(player.id)}
+                  title={player.active ?? true ? 'Spieler deaktivieren' : 'Spieler aktivieren'}
+                  aria-label={`${player.name} ${player.active ?? true ? 'deaktivieren' : 'aktivieren'}`}
+                >
+                  {player.active ?? true ? '🟢' : '⚪'}
+                </button>
                 <button
                   className="icon-btn"
                   onClick={() => removePlayer(player.id)}
@@ -56,15 +64,15 @@ const PlayerSetup: React.FC = () => {
 
       {/* add-player Button befindet sich jetzt in der Kopfzeile */}
 
-      {players.length >= 2 && (
+      {players.filter(p => p.active ?? true).length >= 2 && (
         <div className="mt-6 text-center">
           <button className="btn btn-accent btn-lg" onClick={startWordInput}>
-            Spiel starten ({players.length} Spieler)
+            Spiel starten ({players.filter(p => p.active ?? true).length} Spieler)
           </button>
         </div>
       )}
       
-      {players.length === 1 && (
+      {players.filter(p => p.active ?? true).length === 1 && (
         <p className="mt-2 text-center italic text-slate-500">Mindestens 2 Spieler erforderlich</p>
       )}
 
