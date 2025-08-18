@@ -4,10 +4,7 @@ import HangmanCanvas from './HangmanCanvas';
 import VirtualKeyboard from './VirtualKeyboard';
 
 const MultiplayerGame: React.FC = () => {
-  const { 
-    players,
-    currentGamePlayers,
-    currentPlayerIndex,
+  const {         
     getCurrentPlayer,
     getCurrentPlayerData,
     guessLetter,
@@ -37,7 +34,6 @@ const MultiplayerGame: React.FC = () => {
     }, 1000);
   };
 
-  const activePlayersCount = currentGamePlayers.filter(p => !p.isCompleted).length;
 
   return (
     <div className="multiplayer-game">
