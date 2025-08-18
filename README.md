@@ -14,7 +14,7 @@ Ein modernes Galgenraten-Spiel für mehrere Spieler, entwickelt mit React, TypeS
 
 ## 🚀 Live Demo
 
-Die App ist verfügbar unter: `https://[your-username].github.io/galgenraten/`
+Die App ist verfügbar unter: `https://hkiam.github.io/galgenraten/`
 
 ## 🛠️ Lokale Entwicklung
 
@@ -27,7 +27,7 @@ Die App ist verfügbar unter: `https://[your-username].github.io/galgenraten/`
 
 ```bash
 # Repository klonen
-git clone https://github.com/[your-username]/galgenraten.git
+git clone https://github.com/hkiam/galgenraten.git
 cd galgenraten/galgenraten-react
 
 # Abhängigkeiten installieren
