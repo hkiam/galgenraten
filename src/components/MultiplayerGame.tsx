@@ -36,12 +36,12 @@ const MultiplayerGame: React.FC = () => {
 
 
   return (
-    <div className="multiplayer-game">
-      <div className="current-player-section">
+    <div className="game-card">
+      <div>
         <div className="current-player-info">
-          <span className="player-icon">{currentPlayerData.icon}</span>
-          <span className="player-name">{currentPlayerData.name}</span>
-          <span className="player-label">ist dran</span>
+          <span className="text-2xl">{currentPlayerData.icon}</span>
+          <span className="font-semibold text-slate-800">{currentPlayerData.name}</span>
+          <span className="muted">ist dran</span>
         </div>
 
         <div className="game-area">
@@ -77,7 +77,7 @@ const MultiplayerGame: React.FC = () => {
         )}
 
         {currentPlayer.isCompleted && (
-          <div className="player-completed">
+          <div className="player-completed text-center mt-4">
             {currentPlayer.hasWon ? (
               <div className="won">🎉 Wort erraten! 🎉</div>
             ) : (

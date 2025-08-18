@@ -11,27 +11,27 @@ const PlayerSetup: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="player-setup">
-      <header className="app-header">
-        <h1>Galgenraten - Mehrspieler</h1>
+    <div className="card">
+      <header className="flex flex-col items-center mb-8">
+        <h1 className="text-3xl font-bold text-slate-800 mb-2">Galgenraten - Mehrspieler</h1>
         <AppVersion version={__APP_VERSION__} />
       </header>
 
-      <h2>Spieler-Verwaltung</h2>
+      <h2 className="section-title">Spieler-Verwaltung</h2>
       
-      <div className="players-list">
-        <h3>Spieler ({players.length})</h3>
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">Spieler ({players.length})</h3>
         {players.length === 0 ? (
-          <p className="no-players">Noch keine Spieler hinzugefügt</p>
+          <p className="text-center text-slate-500 italic p-8">Noch keine Spieler hinzugefügt</p>
         ) : (
-          <div className="players-grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {players.map((player) => (
-              <div key={player.id} className="player-card">
-                <span className="player-icon">{player.icon}</span>
-                <span className="player-name">{player.name}</span>
-                <span className="player-wins">🏆 {player.wins}</span>
+              <div key={player.id} className="card-row">
+                <span className="text-3xl">{player.icon}</span>
+                <span className="flex-1 font-semibold text-slate-800">{player.name}</span>
+                <span className="text-warn font-bold">🏆 {player.wins}</span>
                 <button
-                  className="remove-button"
+                  className="icon-btn"
                   onClick={() => removePlayer(player.id)}
                   title="Spieler entfernen"
                   aria-label={`${player.name} entfernen`}
@@ -44,27 +44,27 @@ const PlayerSetup: React.FC = () => {
         )}
       </div>
 
-      <div className="add-player-section">
+      <div className="mb-6 text-center">
         <button 
-          className="add-player-button"
+          className="btn btn-primary btn-lg"
           onClick={openModal}
           aria-label="Neuen Spieler hinzufügen"
         >
-          <span className="add-icon">➕</span>
-          <span className="add-text">Spieler hinzufügen</span>
+          <span className="text-lg">➕</span>
+          <span>Spieler hinzufügen</span>
         </button>
       </div>      
 
       {players.length >= 2 && (
-        <div className="start-game-section">
-          <button className="start-game-button" onClick={startWordInput}>
+        <div className="text-center mt-6">
+          <button className="btn btn-accent btn-lg" onClick={startWordInput}>
             Spiel starten ({players.length} Spieler)
           </button>
         </div>
       )}
       
       {players.length === 1 && (
-        <p className="help-text">Mindestens 2 Spieler erforderlich</p>
+        <p className="text-center text-slate-500 italic mt-2">Mindestens 2 Spieler erforderlich</p>
       )}
 
       <AddPlayerModal 

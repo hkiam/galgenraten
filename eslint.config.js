@@ -3,6 +3,7 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+import tailwind from 'eslint-plugin-tailwindcss'
 import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
@@ -14,10 +15,22 @@ export default tseslint.config([
       tseslint.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
+      tailwind.configs.recommended,
     ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    settings: {
+      tailwindcss: {
+        callees: ['cn'],
+        config: 'tailwind.config.ts',
+      },
+    },
+    rules: {
+      'tailwindcss/classnames-order': 'warn',
+      'tailwindcss/enforces-shorthand': 'off',
+      'tailwindcss/no-custom-classname': 'off',
     },
   },
 ])

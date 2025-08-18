@@ -55,9 +55,9 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
       title="Neuen Spieler hinzufügen"
       size="medium"
     >
-      <div className="add-player-modal-content">
-        <div className="form-group">
-          <label htmlFor="player-name">Name:</label>
+      <div>
+        <div className="mb-4">
+          <label htmlFor="player-name" className="block mb-2 font-bold text-slate-800">Name:</label>
           <input
             id="player-name"
             type="text"
@@ -67,16 +67,17 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
             placeholder="Spielername eingeben"
             maxLength={20}
             autoFocus
+            className="input"
           />
         </div>
         
-        <div className="form-group">
-          <label>Icon wählen:</label>
-          <div className="icon-selector">
+        <div className="mb-4">
+          <label className="block mb-2 font-bold text-slate-800">Icon wählen:</label>
+          <div className="flex flex-wrap gap-2">
             {availableIcons.map((icon) => (
               <button
                 key={icon}
-                className={`icon-button ${selectedIcon === icon ? 'selected' : ''}`}
+                className={`px-3 py-2 text-xl border-2 rounded-lg bg-white transition ${selectedIcon === icon ? 'border-primary bg-blue-50 scale-105' : 'border-slate-200 hover:border-primary'}`}
                 onClick={() => setSelectedIcon(icon)}
                 type="button"
                 aria-label={`Icon ${icon} auswählen`}
@@ -87,19 +88,9 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         
-        <div className="modal-actions">
-          <button 
-            className="modal-button secondary"
-            onClick={handleCancel}
-          >
-            Abbrechen
-          </button>
-          <button 
-            className="modal-button primary"
-            onClick={handleAddPlayer}
-          >
-            Spieler hinzufügen
-          </button>
+        <div className="flex justify-end gap-3 mt-6">
+          <button className="btn btn-secondary" onClick={handleCancel}>Abbrechen</button>
+          <button className="btn btn-primary" onClick={handleAddPlayer}>Spieler hinzufügen</button>
         </div>
       </div>
     </Modal>

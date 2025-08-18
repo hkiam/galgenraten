@@ -49,37 +49,31 @@ const WordInput: React.FC = () => {
 
   if (allWordsEntered) {
     return (
-      <div className="word-input-complete">
-        <h2>Alle Wörter eingegeben! 🎯</h2>
-        <p>Das Spiel startet gleich...</p>
-        <div className="loading-animation">
-          <div className="spinner"></div>
-        </div>
+      <div className="panel panel-center">
+        <h2 className="section-title">Alle Wörter eingegeben! 🎯</h2>
+        <p className="muted">Das Spiel startet gleich...</p>
       </div>
     );
   }
 
   return (
-    <div className="word-input">
-      <h2>Wörter eingeben</h2>
+    <div className="panel">
+      <h2 className="section-title">Wörter eingeben</h2>
       
-      <div className="progress-bar">
+      <div className="progress">
         <div className="progress-text">
           {wordsEntered} von {players.length} Wörtern eingegeben
         </div>
-        <div className="progress-fill">
-          <div 
-            className="progress-bar-fill"
-            style={{ width: `${(wordsEntered / players.length) * 100}%` }}
-          />
+        <div className="progress-track">
+          <div className="progress-value" style={{ width: `${(wordsEntered / players.length) * 100}%` }} />
         </div>
       </div>
 
-      <div className="current-player-input">
+      <div className="bg-slate-50 p-6 rounded-xl mb-6">
         <div className="player-indicator">
-          <span className="player-icon">{currentInputPlayer?.icon}</span>
-          <span className="player-name">{currentInputPlayer?.name}</span>
-          <span className="instruction">gibt ein Wort für die anderen Spieler ein</span>
+          <span className="text-2xl">{currentInputPlayer?.icon}</span>
+          <span className="font-semibold text-slate-800">{currentInputPlayer?.name}</span>
+          <span className="muted">gibt ein Wort für die anderen Spieler ein</span>
         </div>
 
         <div className="word-input-form">
@@ -91,10 +85,9 @@ const WordInput: React.FC = () => {
             placeholder="Wort eingeben (min. 3 Buchstaben)"
             maxLength={30}
             autoFocus
+            className="input"
           />
-          <button onClick={handleSubmitWord}>
-            Wort bestätigen
-          </button>
+          <button className="btn btn-primary" onClick={handleSubmitWord}>Wort bestätigen</button>
         </div>
       </div>
 
@@ -111,9 +104,9 @@ const WordInput: React.FC = () => {
                 key={player.id} 
                 className={`player-status ${isCurrentPlayer ? 'current' : ''} ${hasEnteredWord ? 'completed' : ''}`}
               >
-                <span className="player-icon">{player.icon}</span>
-                <span className="player-name">{player.name}</span>
-                <span className="status-indicator">
+                <span className="text-2xl">{player.icon}</span>
+                <span className="font-semibold text-slate-800">{player.name}</span>
+                <span className="text-lg">
                   {hasEnteredWord ? '✅' : isCurrentPlayer ? '⏳' : '⏸️'}
                 </span>
               </div>

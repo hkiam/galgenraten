@@ -18,16 +18,11 @@ const UpdateNotification: React.FC = () => {
 
   if (offlineReady) {
     return (
-      <div className="update-notification offline-ready">
-        <div className="notification-content">
-          <h3>🎉 App bereit für Offline-Nutzung!</h3>
-          <p>Die App wurde erfolgreich installiert und kann jetzt auch ohne Internetverbindung verwendet werden.</p>
-          <button 
-            className="notification-button primary"
-            onClick={handleOfflineReady}
-          >
-            Verstanden
-          </button>
+      <div className="notify-backdrop">
+        <div className="notify-card success">
+          <h3 className="text-xl font-semibold mb-2">🎉 App bereit für Offline-Nutzung!</h3>
+          <p className="muted mb-4">Die App wurde erfolgreich installiert und kann jetzt auch ohne Internetverbindung verwendet werden.</p>
+          <button className="btn btn-primary" onClick={handleOfflineReady}>Verstanden</button>
         </div>
       </div>
     );
@@ -35,23 +30,13 @@ const UpdateNotification: React.FC = () => {
 
   if (needRefresh) {
     return (
-      <div className="update-notification update-available">
-        <div className="notification-content">
-          <h3>🚀 Neue Version verfügbar!</h3>
-          <p>Eine neue Version der App ist verfügbar. Möchten Sie jetzt aktualisieren?</p>
-          <div className="notification-buttons">
-            <button 
-              className="notification-button primary"
-              onClick={handleUpdate}
-            >
-              Jetzt aktualisieren
-            </button>
-            <button 
-              className="notification-button secondary"
-              onClick={handleDismiss}
-            >
-              Später
-            </button>
+      <div className="notify-backdrop">
+        <div className="notify-card update">
+          <h3 className="text-xl font-semibold mb-2">🚀 Neue Version verfügbar!</h3>
+          <p className="muted mb-4">Eine neue Version der App ist verfügbar. Möchten Sie jetzt aktualisieren?</p>
+          <div className="flex gap-3 justify-center">
+            <button className="btn btn-accent" onClick={handleUpdate}>Jetzt aktualisieren</button>
+            <button className="btn btn-secondary" onClick={handleDismiss}>Später</button>
           </div>
         </div>
       </div>
